@@ -1,5 +1,5 @@
 {
-  "name": "vue-model-validator",
+  "name": "vuejs-model-validator",
   "version": "1.0.0",
   "description": "Vuejs form validator from model data",
   "author": "ragnar lotus",
@@ -13,7 +13,7 @@
     "validator",
     "model"
   ],
-  "license": "MIT",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/deulos/vue-model-validator/issues"
   },
@@ -91,5 +91,8 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "directories": {
+    "test": "test"
+  }
 }
