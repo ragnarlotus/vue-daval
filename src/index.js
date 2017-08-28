@@ -11,7 +11,10 @@ export default {
 
 		this.$vmv = vmv.results;
 		this.$vmv.$validate = vmv.validate.bind(vmv);
-		this.$vmv.$setMessages = this.$options.validationMessages || vmv.setMessages;
+		this.$vmv.$setMessages = vmv.setMessages;
+
+		if (this.$options.validationMessages)
+			this.vmv.setMessages(this.$options.validationMessages);
 	},
 
 
