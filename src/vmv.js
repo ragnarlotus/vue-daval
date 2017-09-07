@@ -78,7 +78,7 @@ export default {
 		else
 			this.resetResult(result[key]);
 
-		this.watchers[path] = this.vm.$watch(() => {
+		this.watchers[path.join('.')] = this.vm.$watch(() => {
 			return value[key];
 
 		}, () => {
