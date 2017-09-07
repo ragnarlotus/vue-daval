@@ -23,9 +23,9 @@ Just create an object in the component named "validations" and create a tree of 
 
 The included validators are:
 
-_Check the type of value_ (`type: 'email'`)
+* Check the type of value (`type: 'email'`)
 
-* type: (String) ['boolean', 'nombre', 'integer', 'float', 'string', 'url', 'email', 'date']
+> type: (String) ['boolean', 'nombre', 'integer', 'float', 'string', 'url', 'email', 'date']
 
 _Check if value is empty_
 * required: (Boolean) [true, false]
