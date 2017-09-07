@@ -22,10 +22,9 @@ npm install --save vuejs-model-validator
 Just create an object in the component named "validations" and create a tree of validations imitating the data structure.
 
 The included validators are:
-_Check the type of value_
-* type: (String) ['boolean', 'nombre', 'integer', 'float', 'string', 'url', 'email', 'date']
 
-`type: 'email'`
+* type: (String) ['boolean', 'nombre', 'integer', 'float', 'string', 'url', 'email', 'date']
+_Check the type of value_ `type: 'email'`
 
 _Check if value is empty_
 * required: (Boolean) [true, false]
