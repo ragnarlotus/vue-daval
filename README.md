@@ -1,6 +1,6 @@
 # vuejs-model-validator
 
-This is a data validator inspired by https://github.com/yiminghe/async-validator adapted to Vue.js 2.0 fixing the lack of other data validators like:
+This is a data validator inspired by https://github.com/yiminghe/async-validator and adapted to Vue.js 2.0 fixing the lack of other data validators like:
 * Template agnostic
 * Simplicity in custom validations
 * Maintain validations reactivity when element replaced
@@ -8,6 +8,7 @@ This is a data validator inspired by https://github.com/yiminghe/async-validator
 * Very simple logic performing validations by order and skipping the rest when validation fails
 * Support for promises
 * Real time results
+* Multiple async validations will be controlled and only last one will be taken.
 
 This validator is served as a mixin in order to reduce the processing and time.
 
@@ -21,16 +22,67 @@ npm install --save vuejs-model-validator
 Just create an object in the component named "validations" and create a tree of validations imitating the data structure.
 
 The included validators are:
-* type: (String) [boolean, nombre, integer, float, string, url, email, date]
-* required (Boolean) [true, false]
-* regexp (RegExp) [regular expression]
+_Check the type of value_
+* type: (String) ['boolean', 'nombre', 'integer', 'float', 'string', 'url', 'email', 'date']
+`type: 'email'`
+
+_Check if value is empty_
+* required: (Boolean) [true, false]
+`required: true`
+
+_Check the value against regular expression_
+* regexp: (RegExp)
+`regexp: /^[0-9]$/`
+
+_Check if value is greater than the number specified_
 * min (Number)
+`min: 5`
+
+_Check if value is less than the number specified_
 * max (Number)
+`max: 99`
+
+_Check if value lengh is greater than the number specified_
 * minlen (Number)
+`minlen: 6`
+
+_Check if value lengh is less than the number specified_
 * maxlen (Number)
+`maxlen: 24`
+
+_Check if value lengh is exactly the number specified_
 * length (Number)
+`required: 9`
+
+_Check if value equals another value_
 * equals (String)
-* isin (String)
+`equals: 'user.passwordRepeat'`
+
+_Check if value is one of an array_
+* isin (Array)
+`isin: ['house', 'car', 'tree', 'clouds']`
+
+# Custom validation
+To create a custom validator just give any non existing name and define it as a function that receives three parameters, current vue component, the value to check, and a callback with a string message of error or empty if success, to be called when validation ends.
+
+```
+  data() {
+		return {
+			fullName: null
+		};
+	},
+
+	validations: {
+		fullName: {
+			required: true,
+			nameValid: (vm, value, callback) => {
+				if (value.indexOf(' ') === -1) {
+					callback('Use first and last name');
+				}
+			});
+		}
+	}
+```
 
 ## Check validation:
 ```
