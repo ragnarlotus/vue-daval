@@ -25,7 +25,7 @@ The included validators are:
 
 * Check the type of value (`type: 'email'`)
 
-  > type: (String) ['boolean', 'nombre', 'integer', 'float', 'string', 'url', 'email', 'date']
+> type: (String) ['boolean', 'nombre', 'integer', 'float', 'string', 'url', 'email', 'date']
 
 _Check if value is empty_
 * required: (Boolean) [true, false]
