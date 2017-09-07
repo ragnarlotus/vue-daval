@@ -68,20 +68,20 @@ To create a custom validator just give any non existing name and define it as a 
 
 ```
 data() {
-  return {
-    fullName: null
-  };
+   return {
+      fullName: null
+   };
 },
 
 validations: {
-  fullName: {
-    required: true,
-    nameValid: (vm, value, callback) => {
-      if (value.indexOf(' ') === -1) {
-        callback('Use first and last name');
-      }
-    });
-  }
+   fullName: {
+      required: true,
+      nameValid: (vm, value, callback) => {
+         if (value.indexOf(' ') === -1) {
+            callback('Use first and last name');
+         }
+      });
+   }
 }
 ```
 
@@ -99,37 +99,37 @@ $vmv.user.email.$error
 ## Example of usage:
 ```
 data() {
-  return {
-    login: {
-      email: null,
-      password: null
-    },
+   return {
+      login: {
+         email: null,
+         password: null
+      },
 
-    register: {
-      alias: null,
-      email: null,
-      password: null,
-      passwordRepeat: null
-    }
-  };
+      register: {
+         alias: null,
+         email: null,
+         password: null,
+         passwordRepeat: null
+      }
+   };
 },
 
 validations: {
-  login: {
-    email: { required: true, type: 'email' },
-    password: { required: true, minlen: config.user.minPasswordLength },
-  },
+   login: {
+      email: { required: true, type: 'email' },
+      password: { required: true, minlen: config.user.minPasswordLength },
+   },
 
-  register: {
-    alias: { required: true, minlen: 5, checkAlias: (vm, alias) => {
-      return vm.$http.post('/users/check/alias', { alias: alias });
-    }},
-    email: { required: true, type: 'email', checkEmail: (vm, email) => {
-      return vm.$http.post('/users/check/email', { email: email });
-    }},
-    password: { required: true, minlen: config.user.minPasswordLength },
-    passwordRepeat: { required: true, equals: 'register.password' }
-  }
+   register: {
+      alias: { required: true, minlen: 5, checkAlias: (vm, alias) => {
+         return vm.$http.post('/users/check/alias', { alias: alias });
+      }},
+      email: { required: true, type: 'email', checkEmail: (vm, email) => {
+         return vm.$http.post('/users/check/email', { email: email });
+      }},
+      password: { required: true, minlen: config.user.minPasswordLength },
+      passwordRepeat: { required: true, equals: 'register.password' }
+   }
 }
 ```
 
