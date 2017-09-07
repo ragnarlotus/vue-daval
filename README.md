@@ -25,52 +25,43 @@ The included validators are:
 
 * Check the type of value (`type: 'email'`)
 
-> type: (String) ['boolean', 'nombre', 'integer', 'float', 'string', 'url', 'email', 'date']
+  > type: (String) ['boolean', 'nombre', 'integer', 'float', 'string', 'url', 'email', 'date']
 
-_Check if value is empty_
-* required: (Boolean) [true, false]
+* Check if value is empty (`required: true`)
 
-`required: true`
+  > required: (Boolean) [true, false]
 
-_Check the value against regular expression_
-* regexp: (RegExp)
+* Check the value against regular expression (`regexp: /^[0-9]$/`)
 
-`regexp: /^[0-9]$/`
+  > regexp: (RegExp)
 
-_Check if value is greater than the number specified_
-* min (Number)
+* Check if value is greater than the number specified (`min: 5`)
 
-`min: 5`
+  > min (Number)
 
-_Check if value is less than the number specified_
-* max (Number)
+* Check if value is less than the number specified (`max: 99`)
 
-`max: 99`
+  > max (Number)
 
-_Check if value lengh is greater than the number specified_
-* minlen (Number)
+* Check if value lengh is greater than the number specified (`minlen: 6`)
 
-`minlen: 6`
+  > minlen (Number)
 
-_Check if value lengh is less than the number specified_
-* maxlen (Number)
+* Check if value lengh is less than the number specified (`maxlen: 24`)
 
-`maxlen: 24`
+  > maxlen (Number)
 
-_Check if value lengh is exactly the number specified_
-* length (Number)
+* Check if value lengh is exactly the number specified (`required: 9`)
 
-`required: 9`
+  > length (Number)
 
-_Check if value equals another value_
-* equals (String)
+* Check if value equals another value (`equals: 'user.passwordRepeat'`)
 
-`equals: 'user.passwordRepeat'`
+  > equals (String)
 
-_Check if value is one of an array_
-* isin (Array)
+* Check if value is one of an array (`isin: ['house', 'car', 'tree', 'clouds']`)
 
-`isin: ['house', 'car', 'tree', 'clouds']`
+  > isin (Array)
 
 # Custom validation
 To create a custom validator just give any non existing name and define it as a function that receives three parameters, current vue component, the value to check, and a callback with a string message of error or empty if success, to be called when validation ends.
