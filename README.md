@@ -24,64 +24,74 @@ Just create an object in the component named "validations" and create a tree of 
 The included validators are:
 _Check the type of value_
 * type: (String) ['boolean', 'nombre', 'integer', 'float', 'string', 'url', 'email', 'date']
+
 `type: 'email'`
 
 _Check if value is empty_
 * required: (Boolean) [true, false]
+
 `required: true`
 
 _Check the value against regular expression_
 * regexp: (RegExp)
+
 `regexp: /^[0-9]$/`
 
 _Check if value is greater than the number specified_
 * min (Number)
+
 `min: 5`
 
 _Check if value is less than the number specified_
 * max (Number)
+
 `max: 99`
 
 _Check if value lengh is greater than the number specified_
 * minlen (Number)
+
 `minlen: 6`
 
 _Check if value lengh is less than the number specified_
 * maxlen (Number)
+
 `maxlen: 24`
 
 _Check if value lengh is exactly the number specified_
 * length (Number)
+
 `required: 9`
 
 _Check if value equals another value_
 * equals (String)
+
 `equals: 'user.passwordRepeat'`
 
 _Check if value is one of an array_
 * isin (Array)
+
 `isin: ['house', 'car', 'tree', 'clouds']`
 
 # Custom validation
 To create a custom validator just give any non existing name and define it as a function that receives three parameters, current vue component, the value to check, and a callback with a string message of error or empty if success, to be called when validation ends.
 
 ```
-  data() {
-		return {
-			fullName: null
-		};
-	},
+data() {
+  return {
+    fullName: null
+  };
+},
 
-	validations: {
-		fullName: {
-			required: true,
-			nameValid: (vm, value, callback) => {
-				if (value.indexOf(' ') === -1) {
-					callback('Use first and last name');
-				}
-			});
-		}
-	}
+validations: {
+  fullName: {
+    required: true,
+    nameValid: (vm, value, callback) => {
+      if (value.indexOf(' ') === -1) {
+        callback('Use first and last name');
+      }
+    });
+  }
+}
 ```
 
 ## Check validation:
@@ -97,55 +107,55 @@ $vmv.user.email.$error
 
 ## Example of usage:
 ```
-  data() {
-		return {
-			login: {
-				email: null,
-				password: null
-			},
+data() {
+  return {
+    login: {
+      email: null,
+      password: null
+    },
 
-			register: {
-				alias: null,
-				email: null,
-				password: null,
-				passwordRepeat: null
-			}
-		};
-	},
+    register: {
+      alias: null,
+      email: null,
+      password: null,
+      passwordRepeat: null
+    }
+  };
+},
 
-	validations: {
-		login: {
-			email: { required: true, type: 'email' },
-			password: { required: true, minlen: config.user.minPasswordLength },
-		},
+validations: {
+  login: {
+    email: { required: true, type: 'email' },
+    password: { required: true, minlen: config.user.minPasswordLength },
+  },
 
-		register: {
-			alias: { required: true, minlen: 5, checkAlias: (vm, alias) => {
-				return vm.$http.post('/users/check/alias', { alias: alias });
-			}},
-			email: { required: true, type: 'email', checkEmail: (vm, email) => {
-				return vm.$http.post('/users/check/email', { email: email });
-			}},
-			password: { required: true, minlen: config.user.minPasswordLength },
-			passwordRepeat: { required: true, equals: 'register.password' }
-		}
-	}
+  register: {
+    alias: { required: true, minlen: 5, checkAlias: (vm, alias) => {
+      return vm.$http.post('/users/check/alias', { alias: alias });
+    }},
+    email: { required: true, type: 'email', checkEmail: (vm, email) => {
+      return vm.$http.post('/users/check/email', { email: email });
+    }},
+    password: { required: true, minlen: config.user.minPasswordLength },
+    passwordRepeat: { required: true, equals: 'register.password' }
+  }
+}
 ```
 
 # Configuration
 Messages can set the validation text by adding them to the component:
 ```
 validationMessages: {
-		type: 'This is not a valid {rule}',
-		required: 'This field is required',
-		regexp: 'This is no a valid value',
-		min: 'Minimun value is {rule}',
-		max: 'Maximun value is {rule}',
-		minlen: 'Minimun length is {rule}',
-		maxlen: 'Maximun length is {rule}',
-		length: 'Length must be {rule}',
-		equals: 'Must equal the field {rule}',
-		enum: 'Must be one of {rule}'
+  type: 'This is not a valid {rule}',
+  required: 'This field is required',
+  regexp: 'This is no a valid value',
+  min: 'Minimun value is {rule}',
+  max: 'Maximun value is {rule}',
+  minlen: 'Minimun length is {rule}',
+  maxlen: 'Maximun length is {rule}',
+  length: 'Length must be {rule}',
+  equals: 'Must equal the field {rule}',
+  enum: 'Must be one of {rule}'
 }
 ```
 It will mix and replace the messages specified.
