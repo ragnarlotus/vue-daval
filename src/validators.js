@@ -41,6 +41,9 @@ export function type(rules, value, data, vmv) {
 		return error;
 	}
 
+	if (value === undefined || value === null)
+		return;
+
 	if (types[rules.type](value) === false)
 		return error;
 }
@@ -81,6 +84,9 @@ export function regexp(rules, value, data, vmv) {
 		return error;
 	}
 
+	if (value === undefined || value === null)
+		return;
+
 	if ((new RegExp(rules.exp)).test(value) === false)
 		return error;
 }
@@ -93,6 +99,9 @@ export function min(rules, value, data, vmv) {
 		console.warn('Not a valid min rule:'+ rules.min);
 		return error;
 	}
+
+	if (value === undefined || value === null)
+		return;
 
 	if (typeof value !== 'number')
 		return error;
@@ -109,6 +118,9 @@ export function max(rules, value, data, vmv) {
 		console.warn('Not a valid max rule: '+ rules.max);
 		return error;
 	}
+
+	if (value === undefined || value === null)
+		return;
 
 	if (typeof value !== 'number')
 		return error;
@@ -147,6 +159,9 @@ export function maxlen(rules, value, data, vmv) {
 		return error;
 	}
 
+	if (value === undefined || value === null)
+		return;
+
 	if (/(string|array)/.test(typeof value) === false)
 		return error;
 
@@ -162,6 +177,9 @@ export function length(rules, value, data, vmv) {
 		console.warn('Not a valid length rule: '+ rules.length);
 		return error;
 	}
+
+	if (value === undefined || value === null)
+		return;
 
 	let type = typeof value;
 
@@ -184,6 +202,9 @@ export function equals(rules, value, data, vmv) {
 		return error;
 	}
 
+	if (value === undefined || value === null)
+		return;
+
 	let value2 = vmv.pathToObject(rules.equals, data);
 
 	if (typeof value2 === 'undefined' && typeof value !== 'undefined')
@@ -201,6 +222,9 @@ export function isin(rules, value, data, vmv) {
 		console.warn('Not a valid enumerator rule:'+ rules.isin);
 		return error;
 	}
+
+	if (value === undefined || value === null)
+		return;
 
 	if (rules.isin.indexOf(value) === -1)
 		return error;
