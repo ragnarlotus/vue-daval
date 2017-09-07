@@ -1,7 +1,7 @@
 {
   "name": "vuejs-model-validator",
-  "version": "1.0.1",
-  "description": "Vuejs form validator from model data",
+  "version": "1.0.3",
+  "description": "Vuejs validator of component data",
   "author": "ragnar lotus",
   "repository": {
     "type": "git",
@@ -9,23 +9,27 @@
   },
   "keywords": [
     "vue",
-    "form",
+    "data",
     "validator",
     "model"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/deulos/vue-model-validator/issues"
   },
   "homepage": "https://github.com/deulos/vue-model-validator#readme",
-  "main": "src/index.js",
+  "main": "dist/vmv.min.js",
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
     "build": "node build/build.js",
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
-    "test": "npm run unit"
+    "test": "npm run unit",
+    "bundle": "node build/bundle.js"
   },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "vue": "^2.3.3"
   },
