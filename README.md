@@ -1,6 +1,6 @@
 # vuejs-model-validator
 
-This is a data validator inspired by https://github.com/yiminghe/async-validator and adapted to Vue.js 2.0 fixing the lack of other data validators like:
+This is a data validator inspired by https://github.com/yiminghe/async-validator and adapted to Vue.js 2 fixing the lack of other data validators like:
 * Template agnostic
 * Simplicity in custom validations
 * Maintain validations reactivity when element replaced
@@ -8,7 +8,8 @@ This is a data validator inspired by https://github.com/yiminghe/async-validator
 * Very simple logic performing validations by order and skipping the rest when validation fails
 * Support for promises
 * Real time results
-* Multiple async validations will be controlled and only last one will be taken.
+* Multiple async validations will be controlled and only last one will be taken
+* Do not revalidate a value already validated
 
 This validator is served as a mixin in order to reduce the processing and time.
 
@@ -134,8 +135,19 @@ validations: {
 
 ## Check validation:
 ```
-this.$vmv.$validate('VALIDATION_PATH', SUCCESS_CALLBACK, ERROR_CALLBACK);
+this.$vmv.$validate(validationPath [, successCallback [, errorCallback [, revalidate [, propagate]]]]);
 ```
+
+validationPath: is a string representing the data path we want to validate.
+
+successCallback: is the function that will be run if validation success.
+
+errorCallback: is the function that will be run if validation fails.
+
+revalidate: is a boolean indicating if values should be validated again even if they were already, being false by default.
+
+propagate: is a boolean telling the validation to follow the object childs, being true by default.
+
 
 ## Displaying erors:
 Just use the same path of data based on $vmv. For example:
