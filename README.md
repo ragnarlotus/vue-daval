@@ -31,7 +31,7 @@ The included validators are:
 
 * Check if value is empty (`required: true`)
 
-  > required: (Boolean) [true, false]
+  > required: (Boolean)
 
 * Check the value against regular expression (`regexp: /^[0-9]$/`)
 
@@ -39,64 +39,31 @@ The included validators are:
 
 * Check if value is greater than the number specified (`min: 5`)
 
-  > min (Number)
+  > min: (Number)
 
 * Check if value is less than the number specified (`max: 99`)
 
-  > max (Number)
+  > max: (Number)
 
 * Check if value lengh is greater than the number specified (`minlen: 6`)
 
-  > minlen (Number)
+  > minlen: (Number)
 
 * Check if value lengh is less than the number specified (`maxlen: 24`)
 
-  > maxlen (Number)
+  > maxlen: (Number)
 
 * Check if value lengh is exactly the number specified (`required: 9`)
 
-  > length (Number)
+  > length: (Number)
 
 * Check if value equals another value (`equals: 'user.passwordRepeat'`)
 
-  > equals (String)
+  > equals: (String)
 
 * Check if value is one of an array (`isin: ['house', 'car', 'tree', 'clouds']`)
 
-  > isin (Array)
-
-# Custom validation
-To create a custom validator just give any non existing name and define it as a function that receives three parameters, current vue component, the value to check, and a callback with a string message of error or empty if success, to be called when validation ends.
-
-```
-data() {
-   return {
-      fullName: null
-   };
-},
-
-validations: {
-   fullName: {
-      required: true,
-      nameValid: (vm, value, callback) => {
-         if (value.indexOf(' ') === -1) {
-            callback('Use first and last name');
-         }
-      });
-   }
-}
-```
-
-## Check validation:
-```
-this.$vmv.$validate('VALIDATION_PATH', SUCCESS_CALLBACK, ERROR_CALLBACK);
-```
-
-## Displaying erors:
-Just use the same path of data based on $vmv. For example:
-```
-$vmv.user.email.$error
-```
+  > isin: (Array)
 
 ## Example of usage:
 ```
@@ -141,6 +108,39 @@ $vmv.user.email.$error
       }
    }
 </script>
+```
+
+# Custom validation
+To create a custom validator just give any non existing name and define it as a function that receives three parameters, current vue component, the value to check, and a callback with a string message of error or empty if success, to be called when validation ends.
+
+```
+data() {
+   return {
+      fullName: null
+   };
+},
+
+validations: {
+   fullName: {
+      required: true,
+      nameValid: (vm, value, callback) => {
+         if (value.indexOf(' ') === -1) {
+            callback('Use first and last name');
+         }
+      });
+   }
+}
+```
+
+## Check validation:
+```
+this.$vmv.$validate('VALIDATION_PATH', SUCCESS_CALLBACK, ERROR_CALLBACK);
+```
+
+## Displaying erors:
+Just use the same path of data based on $vmv. For example:
+```
+$vmv.user.email.$error
 ```
 
 # Configuration
