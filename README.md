@@ -19,7 +19,9 @@ npm install --save vuejs-model-validator
 ```
 
 # Usage
-Just create an object in the component named "validations" and create a tree of validations imitating the data structure.
+First you need to import the mixin and then add it to you vue component.
+
+Then just create an object in the component named "validations" imitating the data structure, with an object with the validators as value.
 
 The included validators are:
 
@@ -98,39 +100,47 @@ $vmv.user.email.$error
 
 ## Example of usage:
 ```
-data() {
-   return {
-      login: {
-         email: null,
-         password: null
+<script>
+   import vmv from 'vuejs-model-validator';
+
+   export default {
+      mixins: [ vmv ],
+
+      data() {
+         return {
+            login: {
+               email: null,
+               password: null
+            },
+
+            register: {
+               alias: null,
+               email: null,
+               password: null,
+               passwordRepeat: null
+            }
+         };
       },
 
-      register: {
-         alias: null,
-         email: null,
-         password: null,
-         passwordRepeat: null
+      validations: {
+         login: {
+            email: { required: true, type: 'email' },
+            password: { required: true, minlen: config.user.minPasswordLength },
+         },
+
+         register: {
+            alias: { required: true, minlen: 5, checkAlias: (vm, alias) => {
+               return vm.$http.post('/users/check/alias', { alias: alias });
+            }},
+            email: { required: true, type: 'email', checkEmail: (vm, email) => {
+               return vm.$http.post('/users/check/email', { email: email });
+            }},
+            password: { required: true, minlen: config.user.minPasswordLength },
+            passwordRepeat: { required: true, equals: 'register.password' }
+         }
       }
-   };
-},
-
-validations: {
-   login: {
-      email: { required: true, type: 'email' },
-      password: { required: true, minlen: config.user.minPasswordLength },
-   },
-
-   register: {
-      alias: { required: true, minlen: 5, checkAlias: (vm, alias) => {
-         return vm.$http.post('/users/check/alias', { alias: alias });
-      }},
-      email: { required: true, type: 'email', checkEmail: (vm, email) => {
-         return vm.$http.post('/users/check/email', { email: email });
-      }},
-      password: { required: true, minlen: config.user.minPasswordLength },
-      passwordRepeat: { required: true, equals: 'register.password' }
    }
-}
+</script>
 ```
 
 # Configuration
