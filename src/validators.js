@@ -79,15 +79,15 @@ export function required(rules, value, data, vmv) {
 export function regexp(rules, value, data, vmv) {
 	let error = vmv.messages.regexp.replace('{rule}', rules.regexp);
 
-	if (rules.exp instanceof RegExp === false) {
-		console.warn('Not a valid regular expression rule: '+ rules.exp);
+	if (rules.regexp instanceof RegExp === false) {
+		console.warn('Not a valid regular expression rule: '+ rules.regexp);
 		return error;
 	}
 
 	if (value === undefined || value === null)
 		return;
 
-	if ((new RegExp(rules.exp)).test(value) === false)
+	if ((new RegExp(rules.regexp)).test(value) === false)
 		return error;
 }
 
