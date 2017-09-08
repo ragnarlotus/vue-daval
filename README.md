@@ -10,6 +10,7 @@ This is a data validator inspired by https://github.com/yiminghe/async-validator
 * Real time results
 * Multiple async validations will be controlled and only last one will be taken
 * Do not revalidate a value already validated
+* Dependencies free, being ~25 KB minified
 
 This validator is served as a mixin in order to reduce the processing and time.
 
