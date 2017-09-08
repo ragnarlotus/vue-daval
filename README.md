@@ -1,11 +1,11 @@
 # vuejs-model-validator
 
-This is a data validator inspired by https://github.com/yiminghe/async-validator and adapted to Vue.js 2 fixing the lack of other data validators like:
+This is a data validator inspired by https://github.com/yiminghe/async-validator and adapted to VueJS fixing the lack of other data validators and with the following characteristics:
 * Template agnostic
 * Simplicity in custom validations
-* Maintain validations reactivity when element replaced
+* Maintain validations reactivity when data replaced
 * Data tree support (objects and array of objects)
-* Very simple logic performing validations by order and skipping the rest when validation fails
+* Very simple logic performing validations by order and skipping the rest when validation fails (if a validation in value fails will not run the rest to validations for the value), reducing time considerably.
 * Support for promises
 * Real time results
 * Multiple async validations will be controlled and only last one will be taken
