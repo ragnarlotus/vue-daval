@@ -1,6 +1,6 @@
 {
   "name": "vuejs-model-validator",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Vuejs validator of component data",
   "author": "ragnar lotus",
   "repository": {
@@ -18,7 +18,7 @@
     "url": "https://github.com/deulos/vue-model-validator/issues"
   },
   "homepage": "https://github.com/deulos/vue-model-validator#readme",
-  "main": "dist/vmv.min.js",
+  "main": "dist/vmv.js",
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
