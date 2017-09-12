@@ -126,10 +126,14 @@ validations: {
    fullName: {
       required: true,
       nameValid: (vm, value, callback) => {
+         let error;
+
          if (value.indexOf(' ') === -1) {
-            callback('Use first and last name');
+           error = 'Use first and last name';
          }
-      });
+
+         callback(error);
+      };
    }
 }
 ```
