@@ -16,7 +16,7 @@ This validator is served as a mixin in order to reduce the processing and time.
 
 # Installation
 You can install it via npm
-```
+```bash
 npm install --save vuejs-model-validator
 ```
 
@@ -68,7 +68,7 @@ The included validators are:
   > isin: (Array)
 
 ## Example of usage:
-```
+```js
 <script>
    import vmv from 'vuejs-model-validator';
 
@@ -115,7 +115,7 @@ The included validators are:
 # Custom validation
 To create a custom validator just give any non existing name and define it as a function that receives three parameters, current vue component, the value to check, and a callback with a string message of error or empty if success, to be called when validation ends.
 
-```
+```js
 data() {
    return {
       fullName: null
@@ -139,7 +139,7 @@ validations: {
 ```
 
 ## Check validation:
-```
+```js
 this.$vmv.$validate(validationPath [, successCallback [, errorCallback [, revalidate [, propagate]]]]);
 ```
 
@@ -156,13 +156,13 @@ propagate: is a boolean telling the validation to follow the object childs, bein
 
 ## Displaying erors:
 Just use the same path of data based on $vmv. For example:
-```
+```js
 $vmv.user.email.$error
 ```
 
 # Configuration
 Messages can set the validation text by adding them to the component:
-```
+```js
 validationMessages: {
    type: 'This is not a valid {rule}',
    required: 'This field is required',
