@@ -1,179 +1,37 @@
-# vuejs-model-validator
+This is a data validator inspired by https://github.com/yiminghe/async-validator and adapted to VueJS fixing the lack of other data validators and with the following features:
 
-This is a data validator inspired by https://github.com/yiminghe/async-validator and adapted to VueJS fixing the lack of other data validators and with the following characteristics:
-* Template agnostic
-* Simplicity in custom validations
-* Maintain validations reactivity when data replaced
-* Data tree support (objects and array of objects)
-* Very simple logic performing validations by order and skipping the rest when validation fails (if a validation in value fails will not run the rest to validations for the value), reducing time considerably.
-* Support for promises
-* Real time results
-* Multiple async validations will be controlled and only last one will be taken
-* Do not revalidate a value already validated
-* Dependencies free, being ~25 KB minified
+### Template agnostic
+No matter what template library you use, this validator will simply work.
 
-This validator is served as a mixin in order to reduce the processing and time.
+### Simplicity in custom validations
+Focused in developer easiness to save time and headaches.
 
-# Installation
-You can install it via npm
-```bash
-npm install --save vuejs-model-validator
-```
+### Maintain validations reactivity when data replaced
+When an object is loaded from server you can set it without worring, it will restore attribute watchers.
 
-# Usage
-First you need to import the mixin and then add it to you vue component.
+### Data tree support (objects and array of objects)
+If you have multiple data objects to validate this mixin will deal with it without trouble.
 
-Then just create an object in the component named "validations" imitating the data structure, with an object with the validators as value.
+### Very simple logic performing validations by order and skipping the rest when validation fails
+If a validation in value fails will not run the rest to validations for the value, reducing time considerably.
 
-The included validators are:
+### Support for promises
+Will detect if the resturned validation is a promise and handle properly without need of external packages.
 
-* Check the type of value (`type: 'email'`)
+### Real time results
+I have found that in some validators the results are showed in the next tick. This mixin forces the render to be updated one the validations are finished so no delays are produced.
 
-  > type: (String) ['boolean', 'nombre', 'integer', 'float', 'string', 'url', 'email', 'date']
+### Multiple async validations will be controlled and only last one will be taken
+If a typing if being validated against a resource it will control the times in order to ensure that the last one is the validation that prevails against the previuos.
 
-* Check if value is empty (`required: true`)
+### Do not revalidate a value already validated
+It controls whether a validation is performed or not, so if the value does not change it will not be validated again, saving time and processing.
 
-  > required: (Boolean)
+### Dependencies free, being ~25 KB minified
+This validator is served as a mixin just with vue as dependency in order to reduce the processing, time and load. It is set out to accomplish most of the use cases so it is adapted to common use needs.
 
-* Check the value against regular expression (`regexp: /^[0-9]$/`)
+### Community open
+Feel free to contribute or bring suggestions, any improvement will be at least taken in mind, discussed and accepted if reasonable, just keep the the previous rules in mind.
 
-  > regexp: (RegExp)
-
-* Check if value is greater than the number specified (`min: 5`)
-
-  > min: (Number)
-
-* Check if value is less than the number specified (`max: 99`)
-
-  > max: (Number)
-
-* Check if value lengh is greater than the number specified (`minlen: 6`)
-
-  > minlen: (Number)
-
-* Check if value lengh is less than the number specified (`maxlen: 24`)
-
-  > maxlen: (Number)
-
-* Check if value lengh is exactly the number specified (`required: 9`)
-
-  > length: (Number)
-
-* Check if value equals another value (`equals: 'user.passwordRepeat'`)
-
-  > equals: (String)
-
-* Check if value is one of an array (`isin: ['house', 'car', 'tree', 'clouds']`)
-
-  > isin: (Array)
-
-## Example of usage:
-```js
-<script>
-   import vmv from 'vuejs-model-validator';
-
-   export default {
-      mixins: [ vmv ],
-
-      data() {
-         return {
-            login: {
-               email: null,
-               password: null
-            },
-
-            register: {
-               alias: null,
-               email: null,
-               password: null,
-               passwordRepeat: null
-            }
-         };
-      },
-
-      validations: {
-         login: {
-            email: { required: true, type: 'email' },
-            password: { required: true, minlen: config.user.minPasswordLength },
-         },
-
-         register: {
-            alias: { required: true, minlen: 5, checkAlias: (vm, alias) => {
-               return vm.$http.post('/users/check/alias', { alias: alias });
-            }},
-            email: { required: true, type: 'email', checkEmail: (vm, email) => {
-               return vm.$http.post('/users/check/email', { email: email });
-            }},
-            password: { required: true, minlen: config.user.minPasswordLength },
-            passwordRepeat: { required: true, equals: 'register.password' }
-         }
-      }
-   }
-</script>
-```
-
-# Custom validation
-To create a custom validator just give any non existing name and define it as a function that receives three parameters, current vue component, the value to check, and a callback with a string message of error or empty if success, to be called when validation ends.
-
-```js
-data() {
-   return {
-      fullName: null
-   };
-},
-
-validations: {
-   fullName: {
-      required: true,
-      nameValid: (vm, value, callback) => {
-         let error;
-
-         if (value.indexOf(' ') === -1) {
-           error = 'Use first and last name';
-         }
-
-         callback(error);
-      };
-   }
-}
-```
-
-## Check validation:
-```js
-this.$vmv.$validate(validationPath [, successCallback [, errorCallback [, revalidate [, propagate]]]]);
-```
-
-validationPath: is a string representing the data path we want to validate.
-
-successCallback: is the function that will be run if validation success.
-
-errorCallback: is the function that will be run if validation fails.
-
-revalidate: is a boolean indicating if values should be validated again even if they were already, being false by default.
-
-propagate: is a boolean telling the validation to follow the object childs, being true by default.
-
-
-## Displaying erors:
-Just use the same path of data based on $vmv. For example:
-```js
-$vmv.user.email.$error
-```
-
-# Configuration
-Messages can set the validation text by adding them to the component:
-```js
-validationMessages: {
-   type: 'This is not a valid {rule}',
-   required: 'This field is required',
-   regexp: 'This is no a valid value',
-   min: 'Minimun value is {rule}',
-   max: 'Maximun value is {rule}',
-   minlen: 'Minimun length is {rule}',
-   maxlen: 'Maximun length is {rule}',
-   length: 'Length must be {rule}',
-   equals: 'Must equal the field {rule}',
-   enum: 'Must be one of {rule}'
-}
-```
-It will mix and replace the messages specified.
+# Documentation
+Please visit our wiki that we bother to keep updated to know everything about this component: https://github.com/deulos/vuejs-model-validator/wiki
