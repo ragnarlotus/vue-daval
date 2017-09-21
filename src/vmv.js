@@ -107,11 +107,18 @@ export default {
 
 
 	removeWatchers(path) {
-		Object.keys(this.watchers).forEach((key) => {
-			if ((new RegExp('^'+ path, 'i')).test(key)) {
-				this.watchers[key]();
-				delete this.watchers[key];
-			}
+		let keys = Object.keys(this.watchers);
+		let isChild = new RegExp('^'+ path +'\\.', 'i');
+
+		if (path !== undefined) {
+			keys = keys.filter((key) => {
+				return path === key || isChild.test(key);
+			});
+		}
+
+		keys.forEach((key) => {
+			this.watchers[key]();
+			delete this.watchers[key];
 		});
 	},
 
