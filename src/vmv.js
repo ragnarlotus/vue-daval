@@ -153,19 +153,18 @@ export default {
 		} else {
 			let result = this.pathToObject(paths.current, this.results);
 
-			if (!revalidate && result.$validated === true)
-				return;
+			if (revalidate || result.$validated === false) {
+				if (this.tasks[paths.origin][paths.current] === undefined)
+					this.tasks[paths.origin][paths.current] = {};
 
-			if (this.tasks[paths.origin][paths.current] === undefined)
-				this.tasks[paths.origin][paths.current] = {};
-
-			Object.assign(this.tasks[paths.origin][paths.current], {
-				time: time,
-				value: value,
-				rules: this.pathToObject(paths.current, this.validations),
-				result: this.resetResult(result),
-				finishedRules: 0
-			});
+				Object.assign(this.tasks[paths.origin][paths.current], {
+					time: time,
+					value: value,
+					rules: this.pathToObject(paths.current, this.validations),
+					result: this.resetResult(result),
+					finishedRules: 0
+				});
+			}
 		}
 
 		if (validateOnFinish) {
