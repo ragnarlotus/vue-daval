@@ -1,7 +1,8 @@
 import vmv from './vmv.js';
 
 export default {
-	created() {
+
+	beforeMount() {
 		if (!this.$options.validations) {
 			console.warn('No validations defined');
 			return;
