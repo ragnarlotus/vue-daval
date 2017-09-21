@@ -13,16 +13,16 @@ When an object is loaded from server you can set it without worring, it will res
 If you have multiple data objects to validate this mixin will deal with it without trouble.
 
 ### Very simple logic performing validations by order and skipping the rest when validation fails
-If a validation in value fails will not run the rest to validations for the value, reducing time considerably.
+If a validation in value fails will not run the rest of validations for the value, reducing time considerably.
 
 ### Support for promises
-Will detect if the resturned validation is a promise and handle properly without need of external packages.
+Will detect if the returned validation is a promise and handle properly without need of external packages.
 
 ### Real time results
-I have found that in some validators the results are showed in the next tick. This mixin forces the render to be updated one the validations are finished so no delays are produced.
+I have found that in some validators the results are showed in the next tick. This mixin forces the render to be updated once the validations are finished so no delays on resulta are produced.
 
 ### Multiple async validations will be controlled and only last one will be taken
-If a typing if being validated against a resource it will control the times in order to ensure that the last one is the validation that prevails against the previuos.
+If a typing is being validated against a resource it will control the times in order to ensure that the last one is the validation that prevails against the previuos.
 
 ### Do not revalidate a value already validated
 It controls whether a validation is performed or not, so if the value does not change it will not be validated again, saving time and processing.
