@@ -1,5 +1,7 @@
 import vmv from './vmv.js';
 
+let destroyWatchers = true;
+
 export default {
 
 	beforeMount() {
@@ -7,6 +9,8 @@ export default {
 			console.warn('No validations defined');
 			return;
 		}
+
+		destroyWatchers = false;
 
 		vmv.init(this, this._data, this.$options.validations);
 
@@ -27,8 +31,13 @@ export default {
 	},
 
 
-	beforeDestroy() {
-		vmv.removeWatchers();
+	destroyed() {
+		if (destroyWatchers) {
+			vmv.removeWatchers();
+
+		} else {
+			destroyWatchers = true;
+		}
 	}
 
 };
