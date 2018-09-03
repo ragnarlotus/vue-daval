@@ -66,8 +66,7 @@
 			</div>
 
 			<div class="col-sm-8">
-				<pre><code class="language-js">
-data: () => ({
+				<pre><code class="language-js">data: () => ({
    login: {
       email: null,
       password: null
