@@ -1,6 +1,6 @@
 {
   "name": "vuejs-model-validator",
-  "version": "1.0.15",
+  "version": "1.1.0",
   "description": "Vuejs validator of component data",
   "author": "ragnar lotus",
   "repository": {
@@ -22,20 +22,23 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build-docs": "vue-cli-service build --dest docs",
+    "test:unit": "vue-cli-service test:unit",
     "bundle": "vue-cli-service build --target lib --name vuejs-model-validator \"src/components/index.js\""
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "vue": "^2.5.17"
+    "vue": "^2.5.16"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.0.1",
-    "@vue/cli-service": "^3.0.1",
-    "node-sass": "^4.9.3",
-    "sass-loader": "^7.1.0",
-    "vue-template-compiler": "^2.5.17"
+    "@vue/cli-plugin-babel": "^3.0.0-rc.3",
+    "@vue/cli-plugin-unit-jest": "^3.0.0-rc.3",
+    "@vue/cli-service": "^3.0.0-rc.3",
+    "@vue/test-utils": "^1.0.0-beta.16",
+    "node-sass": "^4.9.2",
+    "sass-loader": "^7.0.1",
+    "vue-template-compiler": "^2.5.16"
   },
   "postcss": {
     "plugins": {
@@ -57,5 +60,27 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "json",
+      "vue"
+    ],
+    "transform": {
+      "^.+\\.vue$": "vue-jest",
+      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "snapshotSerializers": [
+      "jest-serializer-vue"
+    ],
+    "testMatch": [
+      "<rootDir>/(tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx))"
+    ]
+  }
 }
