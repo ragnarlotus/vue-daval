@@ -62,7 +62,12 @@ export default {
 
 
 	setMessages(messages) {
-		this.messages = Object.assign(this.messages, messages);
+		Object.assign(this.messages, messages);
+	},
+
+
+	addValidators(newValidators) {
+		Object.assign(validators, newValidators);
 	},
 
 
