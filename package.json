@@ -1,11 +1,11 @@
 {
-  "name": "vuejs-model-validator",
-  "version": "1.1.0",
-  "description": "Vuejs validator of component data",
+  "name": "vue-daval",
+  "version": "0.1.0",
+  "description": "Vue data validator",
   "author": "ragnar lotus",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deulos/vuejs-model-validator.git"
+    "url": "git+https://github.com/deulos/vue-daval.git"
   },
   "keywords": [
     "vue",
@@ -15,30 +15,27 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/deulos/vuejs-model-validator/issues"
+    "url": "https://github.com/deulos/vue-daval/issues"
   },
-  "homepage": "https://github.com/deulos/vuejs-model-validator#readme",
-  "main": "dist/vuejs-model-validator.umd.min.js",
+  "homepage": "https://github.com/deulos/vue-daval#readme",
+  "main": "dist/vue-daval.umd.min.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build-docs": "vue-cli-service build --dest docs",
-    "test:unit": "vue-cli-service test:unit",
-    "bundle": "vue-cli-service build --target lib --name vuejs-model-validator \"src/components/index.js\""
+    "bundle": "vue-cli-service build --target lib --name vue-daval \"src/mixins/VueDaval.js\""
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "vue": "^2.5.16"
+    "vue": "^2.5.17"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.0.0-rc.3",
-    "@vue/cli-plugin-unit-jest": "^3.0.0-rc.3",
-    "@vue/cli-service": "^3.0.0-rc.3",
-    "@vue/test-utils": "^1.0.0-beta.16",
-    "node-sass": "^4.9.2",
-    "sass-loader": "^7.0.1",
-    "vue-template-compiler": "^2.5.16"
+    "@vue/cli-plugin-babel": "^3.0.4",
+    "@vue/cli-service": "^3.0.4",
+    "node-sass": "^4.9.3",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.5.17"
   },
   "postcss": {
     "plugins": {
@@ -46,12 +43,7 @@
     }
   },
   "vue": {
-    "baseUrl": "/vuejs-model-validator/",
-    "configureWebpack": {
-      "output": {
-        "libraryExport": "default"
-      }
-    },
+    "baseUrl": "/vue-daval/",
     "css": {
       "extract": false
     }
@@ -60,27 +52,5 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ],
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "json",
-      "vue"
-    ],
-    "transform": {
-      "^.+\\.vue$": "vue-jest",
-      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
-      "^.+\\.jsx?$": "babel-jest"
-    },
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    },
-    "snapshotSerializers": [
-      "jest-serializer-vue"
-    ],
-    "testMatch": [
-      "<rootDir>/(tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx))"
-    ]
-  }
+  ]
 }
