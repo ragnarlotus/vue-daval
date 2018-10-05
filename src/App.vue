@@ -1,6 +1,6 @@
 <template>
 	<div id="app" class="container">
-		<h1>vuejs-model-validator</h1>
+		<h1>vue-daval</h1>
 
 		<div class="row">
 			<div class="col-sm-4">
@@ -15,13 +15,13 @@
 						<div class="form-group">
 							<label>Email</label>
 							<input type="text" v-model="login.email" class="form-control" :class="inputClass('login', 'email')">
-							<div v-show="$vmv.login.email.$error" class="invalid-feedback">{{ $vmv.login.email.$error }}</div>
+							<!--<div v-show="$vd.login.email.$error" class="invalid-feedback">{{ $vd.login.email.$error }}</div>-->
 						</div>
 
 						<div class="form-group">
 							<label>Password</label>
 							<input type="password" v-model="login.password" class="form-control" :class="inputClass('login', 'password')">
-							<div v-show="$vmv.login.password.$error" class="invalid-feedback">{{ $vmv.login.password.$error }}</div>
+							<!--<div v-show="$vd.login.password.$error" class="invalid-feedback">{{ $vd.login.password.$error }}</div>-->
 						</div>
 
 						<button type="submit" class="btn btn-primary">Login</button>
@@ -39,25 +39,25 @@
 						<div class="form-group">
 							<label>Alias</label>
 							<input type="text" v-model="register.alias" class="form-control">
-							<div v-show="$vmv.register.alias.$error" class="invalid-feedback">{{ $vmv.register.alias.$error }}</div>
+							<!--<div v-show="$vd.register.alias.$error" class="invalid-feedback">{{ $vd.register.alias.$error }}</div>-->
 						</div>
 
 						<div class="form-group">
 							<label>Email</label>
 							<input type="text" v-model="register.email" class="form-control">
-							<div v-show="$vmv.register.email.$error" class="invalid-feedback">{{ $vmv.register.email.$error }}</div>
+							<!--<div v-show="$vd.register.email.$error" class="invalid-feedback">{{ $vd.register.email.$error }}</div>-->
 						</div>
 
 						<div class="form-group">
 							<label>Password</label>
 							<input type="password" v-model="register.password" class="form-control">
-							<div v-show="$vmv.register.password.$error" class="invalid-feedback">{{ $vmv.register.password.$error }}</div>
+							<!--<div v-show="$vd.register.password.$error" class="invalid-feedback">{{ $vd.register.password.$error }}</div>-->
 						</div>
 
 						<div class="form-group">
 							<label>Repeat</label>
 							<input type="password" v-model="register.passwordRepeat" class="form-control">
-							<div v-show="$vmv.register.passwordRepeat.$error" class="invalid-feedback">{{ $vmv.register.passwordRepeat.$error }}</div>
+							<!--<div v-show="$vd.register.passwordRepeat.$error" class="invalid-feedback">{{ $vd.register.passwordRepeat.$error }}</div>-->
 						</div>
 
 						<button type="submit" class="btn btn-primary">Register</button>
@@ -91,7 +91,7 @@ validations: {
          callback(alias === 'admin'? 'Alias already in use' : undefined);
       }},
       email: { required: true, type: 'email', checkEmail: (vm, email, callback) => {
-         callback(email === 'admin@vmv.com'? 'Email already registered' : undefined);
+         callback(email === 'admin@vd.com'? 'Email already registered' : undefined);
       }},
       password: { required: true, minlen: 5 },
       passwordRepeat: { required: true, equals: 'register.password' }
@@ -104,11 +104,11 @@ validations: {
 </template>
 
 <script>
-	import vmv from './components';
+	import vd from './mixins/VueDaval.js';
 
 	export default {
 		name: 'app',
-		mixins: [ vmv ],
+		mixins: [ vd ],
 
 		data: () => ({
 			result: {
@@ -134,7 +134,7 @@ validations: {
 			}
 		}),
 
-		validations: {
+		vdRules: {
 			login: {
 				email: { required: true, type: 'email' },
 				password: { required: true, minlen: 5 },
@@ -145,11 +145,16 @@ validations: {
 					callback(alias === 'admin'? 'Alias already in use' : undefined);
 				}},
 				email: { required: true, type: 'email', checkEmail: (vm, email, callback) => {
-					callback(email === 'admin@vmv.com'? 'Email already registered' : undefined);
+					callback(email === 'admin@vd.com'? 'Email already registered' : undefined);
 				}},
 				password: { required: true, minlen: 5 },
 				passwordRepeat: { required: true, equals: 'register.password' }
 			}
+		},
+
+		mounted() {
+			console.log(this.$vd);
+			console.log(this.$vd.login.email.$path);
 		},
 
 		methods: {
@@ -162,20 +167,25 @@ validations: {
 			},
 
 			inputClass(form, input) {
-				if (!this.$vmv[form])
+				return '';
+/*
+				if (!this.$vd)
 					return '';
 
-				if (this.$vmv[form][input].$validated === false)
+				if (!this.$vd[form])
 					return '';
 
-				if (this.$vmv[form][input].$error !== undefined)
+				if (this.$vd[form][input].$validated === false)
+					return '';
+
+				if (this.$vd[form][input].$error !== undefined)
 					return 'is-invalid';
 
-				return 'is-valid';
+				return 'is-valid';*/
 			},
 
 			doLogin() {
-				this.$vmv.$validate('login', () => {
+				this.$vd.$validate('login', () => {
 					this.result.login = true;
 					this.message.login = 'Logged in!';
 
@@ -186,7 +196,7 @@ validations: {
 			},
 
 			doRegister() {
-				this.$vmv.$validate('register', () => {
+				this.$vd.$validate('register', () => {
 					this.result.register = true;
 					this.message.register = 'Registered successfully!';
 
