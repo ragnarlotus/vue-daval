@@ -55,8 +55,8 @@ export default class Path {
 		this.$watcher = undefined;
 	}
 
-	$validate(callbackSuccess, callbackError, revalidate = false, propagate = true) {
-
+	$validate(onSuccess, onError, revalidate = false, propagate = true) {
+		this.$vm.$vd.$addTask(this, onSuccess, onError, revalidate, propagate);
 	}
 
 	$toString() {

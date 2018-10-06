@@ -153,8 +153,8 @@ validations: {
 		},
 
 		mounted() {
-			console.log(this.$vd);
-			console.log(this.$vd.login.email.$path);
+			//console.log(this.$vd);
+			//console.log(this.$vd.login.email.$path);
 		},
 
 		methods: {
