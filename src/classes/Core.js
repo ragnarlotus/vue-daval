@@ -68,4 +68,30 @@ export default class Core {
 		}
 	}
 
+	$addTask(path, onSuccess, onError, revalidate, propagate, rootTask) {
+		let time = Date.now();
+
+		let task = new Task(path, onSuccess, onError, revalidate, time);
+
+		this.tasks.set(path.toString(), task);
+
+		if (propagate && path.$childs.length) {
+			rootTask = rootTask || task;
+
+			let childTask;
+
+			path.$childs.forEach((childPath) => {
+				childTask = this.$addTask(childPath, undefined, undefined, revalidate, propagate, rootTask);
+
+				originTask.$addChild(childTask);
+			});
+		}
+
+		if (rootTask === undefined || rootTask === task) {
+			this.$runTask(task);
+		}
+
+		return task;
+	}
+
 };
