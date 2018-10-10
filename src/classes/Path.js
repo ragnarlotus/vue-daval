@@ -1,6 +1,6 @@
 // Path class
 
-import Utils from '../libraries/Utils.js';
+import * as Utils from '../libraries/Utils.js';
 import Result from './Result.js';
 
 export default class Path {
@@ -11,10 +11,19 @@ export default class Path {
 		this.$data = data;
 		this.$rules = rules;
 		this.$parent = parent;
-		this.$childs = [];
+		this.$validations = [];
 
-		this.$result = new Result;
 		this.$createWatcher();
+
+		let numPaths = this.$vm.$vd.$paths.size;
+
+		this.$createChilds();
+
+		if (numPaths === this.$vm.$vd.$paths.size) {
+			this.$result = new Result(this);
+
+			this.$parent.$addValidation(this);
+		}
 
 		return new Proxy(this, this);
 	}
@@ -23,28 +32,75 @@ export default class Path {
 		if (prop in obj)
 			return this[prop];
 
+		if (prop === '$validated' && this.$result)
+			return this.$result.$validated;
+
+		if (prop === '$error' && this.$result)
+			return this.$result.$error;
+
+		if (this.$hasRules() && prop in this.$rules)
+			return this.$rules[prop];
+
 		let childPath = this.$path.concat(prop);
 
 		return this.$vm.$vd.$getPath(childPath);
 	}
 
-	$addChild(child) {
-		this.$childs.push(child);
+	$hasRules() {
+		return '$result' in this;
 	}
 
-	$reset(propagate = false) {
-		this.$result.reset();
+	$getRules() {
+		let rules = Object.keys(this.$rules);
+
+		return rules.filter(rule => rule !== 'message' && rule !== 'field');
+	}
+
+	$addValidation(path) {
+		this.$validations.push(path);
+
+		if (this.$parent !== undefined)
+			this.$parent.$addValidation(this);
+	}
+
+	$createChilds() {
+		let child;
+
+		if (Utils.isObject(this.$data)) {
+			Object.keys(this.$rules).forEach((key) => {
+				child = new Path(this.$vm, this.$path.concat(key), this.$data[key], this.$rules[key], this);
+
+				this.$vm.$vd.$addPath(child);
+			});
+
+		} else if (Utils.isArray(this.$data)) {
+			this.$data.forEach((item, index) => {
+				child = new Path(this.$vm, this.$path.concat(index), item, this.$rules, this);
+
+				this.$vm.$vd.$addPath(child);
+			});
+		}
+	}
+
+	$reset() {
+		this.$validations.forEach((validation) => {
+			child.$reset(propagate);
+		});
+
+		if (this.$result !== undefined)
+			this.$result.reset();
 	}
 
 	$createWatcher() {
 		if (this.$watcher)
 			this.$watcher();
 
-		this.$watcher = this.$vm.$watch(() => {
-			return this.$data;
+		if (this.$path.length === 0)
+			return;
 
-		}, () => {
-			this.$validate(undefined, undefined, true, false);
+		this.$watcher = this.$vm.$watch(this.$toString(), (value) => {
+			this.$data = value;
+			this.$validate(true, false).then(() => {}).catch(() => {});
 		});
 	}
 
@@ -55,8 +111,10 @@ export default class Path {
 		this.$watcher = undefined;
 	}
 
-	$validate(onSuccess, onError, revalidate = false, propagate = true) {
-		this.$vm.$vd.$addTask(this, onSuccess, onError, revalidate, propagate);
+	$validate(revalidate = false, propagate = true) {
+		let task = this.$vm.$vd.$addTask(this, revalidate, propagate);
+
+		return task.promise;
 	}
 
 	$toString() {

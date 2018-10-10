@@ -1,19 +1,14 @@
 // Core class
 
-import Utils from '../libraries/Utils.js';
+import * as Utils from '../libraries/Utils.js';
 import Path from './Path.js';
 import Task from './Task.js';
 
 export default class Core {
 
-	constructor(vm) {
-		this.$vm = vm;
-		this.$data = vm._data;
-		this.$rules = vm.$options.vdRules;
+	constructor() {
 		this.$paths = new Map;
 		this.$tasks = new Map;
-
-		this.$addPath([], this.$data, this.$rules);
 
 		return new Proxy(this, this);
 	}
@@ -22,29 +17,8 @@ export default class Core {
 		return this[prop] || this.$getPath(prop);
 	}
 
-	$addPath(path, data, rules, parent) {
-		let pathModel = new Path(this.$vm, path, data, rules, parent);
-
-		this.$paths.set(path.join('.'), pathModel);
-
-		let child;
-
-		if (Utils.isObject(data)) {
-			Object.keys(rules).forEach((key) => {
-				child = this.$addPath(path.concat(key), data[key], rules[key], pathModel);
-
-				pathModel.$addChild(child);
-			});
-
-		} else if (Utils.isArray(data)) {
-			data.forEach((item, index) => {
-				child = this.$addPath(path.concat(index), item, rules, pathModel);
-
-				pathModel.$addChild(child);
-			});
-		}
-
-		return pathModel;
+	$addPath(path) {
+		this.$paths.set(path.$toString(), path);
 	}
 
 	$getPath(path) {
@@ -68,30 +42,29 @@ export default class Core {
 		}
 	}
 
-	$addTask(path, onSuccess, onError, revalidate, propagate, rootTask) {
-		let time = Date.now();
+	$addTask(path, revalidate, propagate) {
+		if (path.$hasRules() === false && propagate === false)
+			return;
 
-		let task = new Task(path, onSuccess, onError, revalidate, time);
+		let task = this.$tasks.get(path.$toString());
 
-		this.tasks.set(path.toString(), task);
+		if (task === undefined) {
+			task = new Task(path, revalidate, propagate);
 
-		if (propagate && path.$childs.length) {
-			rootTask = rootTask || task;
-
-			let childTask;
-
-			path.$childs.forEach((childPath) => {
-				childTask = this.$addTask(childPath, undefined, undefined, revalidate, propagate, rootTask);
-
-				originTask.$addChild(childTask);
-			});
+			this.$tasks.set(path.$toString(), task);
 		}
 
-		if (rootTask === undefined || rootTask === task) {
-			this.$runTask(task);
-		}
+		this.$runTask(task);
 
 		return task;
+	}
+
+	$runTask(task) {
+		task.run();
+	}
+
+	$removeTask(task) {
+		this.$tasks.delete(task.path.$toString());
 	}
 
 };
