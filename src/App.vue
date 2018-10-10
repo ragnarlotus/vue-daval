@@ -14,14 +14,14 @@
 					<form @submit.prevent="doLogin" :class="formClass('login')" novalidate>
 						<div class="form-group">
 							<label>Email</label>
-							<input type="text" v-model="login.email" class="form-control" :class="inputClass('login', 'email')">
-							<!--<div v-show="$vd.login.email.$error" class="invalid-feedback">{{ $vd.login.email.$error }}</div>-->
+							<input type="text" v-model="login.email" :class="inputClass('login', 'email')">
+							<div v-show="$vd.login.email.$error" class="invalid-feedback">{{ $vd.login.email.$error }}</div>
 						</div>
 
 						<div class="form-group">
 							<label>Password</label>
-							<input type="password" v-model="login.password" class="form-control" :class="inputClass('login', 'password')">
-							<!--<div v-show="$vd.login.password.$error" class="invalid-feedback">{{ $vd.login.password.$error }}</div>-->
+							<input type="password" v-model="login.password" :class="inputClass('login', 'password')">
+							<div v-show="$vd.login.password.$error" class="invalid-feedback">{{ $vd.login.password.$error }}</div>
 						</div>
 
 						<button type="submit" class="btn btn-primary">Login</button>
@@ -38,26 +38,26 @@
 					<form @submit.prevent="doRegister" :class="formClass('register')" novalidate>
 						<div class="form-group">
 							<label>Alias</label>
-							<input type="text" v-model="register.alias" class="form-control">
-							<!--<div v-show="$vd.register.alias.$error" class="invalid-feedback">{{ $vd.register.alias.$error }}</div>-->
+							<input type="text" v-model="register.alias" :class="inputClass('register', 'alias')">
+							<div v-show="$vd.register.alias.$error" class="invalid-feedback">{{ $vd.register.alias.$error }}</div>
 						</div>
 
 						<div class="form-group">
 							<label>Email</label>
-							<input type="text" v-model="register.email" class="form-control">
-							<!--<div v-show="$vd.register.email.$error" class="invalid-feedback">{{ $vd.register.email.$error }}</div>-->
+							<input type="text" v-model="register.email" :class="inputClass('register', 'email')">
+							<div v-show="$vd.register.email.$error" class="invalid-feedback">{{ $vd.register.email.$error }}</div>
 						</div>
 
 						<div class="form-group">
 							<label>Password</label>
-							<input type="password" v-model="register.password" class="form-control">
-							<!--<div v-show="$vd.register.password.$error" class="invalid-feedback">{{ $vd.register.password.$error }}</div>-->
+							<input type="password" v-model="register.password" :class="inputClass('register', 'password')">
+							<div v-show="$vd.register.password.$error" class="invalid-feedback">{{ $vd.register.password.$error }}</div>
 						</div>
 
 						<div class="form-group">
 							<label>Repeat</label>
-							<input type="password" v-model="register.passwordRepeat" class="form-control">
-							<!--<div v-show="$vd.register.passwordRepeat.$error" class="invalid-feedback">{{ $vd.register.passwordRepeat.$error }}</div>-->
+							<input type="password" v-model="register.passwordRepeat" :class="inputClass('register', 'passwordRepeat')">
+							<div v-show="$vd.register.passwordRepeat.$error" class="invalid-feedback">{{ $vd.register.passwordRepeat.$error }}</div>
 						</div>
 
 						<button type="submit" class="btn btn-primary">Register</button>
@@ -122,39 +122,34 @@ validations: {
 			},
 
 			login: {
-				email: null,
-				password: null
+				email: undefined,
+				password: undefined
 			},
 
 			register: {
-				alias: null,
-				email: null,
-				password: null,
-				passwordRepeat: null
+				alias: undefined,
+				email: undefined,
+				password: undefined,
+				passwordRepeat: undefined
 			}
 		}),
 
 		vdRules: {
 			login: {
 				email: { required: true, type: 'email' },
-				password: { required: true, minlen: 5 },
+				password: { required: true, minlen: 5 }
 			},
 
 			register: {
-				alias: { required: true, minlen: 5, checkAlias: (vm, alias, callback) => {
-					callback(alias === 'admin'? 'Alias already in use' : undefined);
+				alias: { required: true, minlen: 5, checkAlias: (alias) => {
+					return alias === 'admin'? 'Alias already in use' : true;
 				}},
-				email: { required: true, type: 'email', checkEmail: (vm, email, callback) => {
-					callback(email === 'admin@vd.com'? 'Email already registered' : undefined);
+				email: { required: true, type: 'email', checkEmail: (email) => {
+					return email === 'admin@vd.com'? 'Email already registered' : true;
 				}},
 				password: { required: true, minlen: 5 },
 				passwordRepeat: { required: true, equals: 'register.password' }
 			}
-		},
-
-		mounted() {
-			//console.log(this.$vd);
-			//console.log(this.$vd.login.email.$path);
 		},
 
 		methods: {
@@ -167,40 +162,37 @@ validations: {
 			},
 
 			inputClass(form, input) {
-				return '';
-/*
-				if (!this.$vd)
-					return '';
+				let inputClass = 'form-control';
 
 				if (!this.$vd[form])
-					return '';
+					return inputClass;
 
 				if (this.$vd[form][input].$validated === false)
-					return '';
+					return inputClass;
 
 				if (this.$vd[form][input].$error !== undefined)
-					return 'is-invalid';
+					return inputClass +' is-invalid';
 
-				return 'is-valid';*/
+				return inputClass +' is-valid';
 			},
 
 			doLogin() {
-				this.$vd.$validate('login', () => {
+				this.$vd.login.$validate().then(() => {
 					this.result.login = true;
 					this.message.login = 'Logged in!';
 
-				}, () => {
+				}).catch(() => {
 					this.result.login = false;
 					this.message.login = 'Error logging in';
 				});
 			},
 
 			doRegister() {
-				this.$vd.$validate('register', () => {
+				this.$vd.register.$validate().then(() => {
 					this.result.register = true;
 					this.message.register = 'Registered successfully!';
 
-				}, () => {
+				}).catch(() => {
 					this.result.register = false;
 					this.message.register = 'Error registering';
 				});

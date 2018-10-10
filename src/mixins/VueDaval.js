@@ -1,16 +1,24 @@
 import Core from '../classes/Core.js';
+import Path from '../classes/Path.js';
 import * as Validators from '../libraries/Validators.js';
 
 export default {
 
 	beforeMount() {
 		this.$vd = new Core(this);
+
+		let path = new Path(this, [], this._data, this.$options.vdRules);
+		this.$vd.$addPath(path);
 	},
 
 	beforeDestroyed() {
-		this.$vd.$paths.forEach((pathModel, path) => {
+		this.$vd.$paths.forEach((undefined, path) => {
 			this.$vd.$removePath(path);
 		});
+	},
+
+	vdConfig: {
+		skipNextRulesOnError: false
 	},
 
 	vdRules: {},

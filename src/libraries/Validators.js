@@ -33,199 +33,147 @@ const types = {
 };
 
 
-export function type(rules, value, data, vmv) {
-	let error = vmv.messages.type.replace('{rule}', rules.type);
-
-	if (types[rules.type] === undefined) {
-		console.warn('Not a valid type: '+ rules.type);
-		return error;
-	}
-
+export function type(rule, value) {
 	if (value === undefined || value === null)
-		return;
+		return true;
 
-	if (types[rules.type](value) === false)
-		return error;
+	if (types[rule](value) === false)
+		return false;
+
+	return true;
 }
 
 
-export function required(rules, value, data, vmv) {
-	let error = vmv.messages.required.replace('{rule}', rules.required);
-
-	if (typeof rules.required !== 'boolean') {
-		console.warn('Not a valid required rule: '+ rules.required);
-		return error;
-	}
-
-	if (rules.required === false)
-		return;
+export function required(rule, value) {
+	if (rule === false)
+		return true;
 
 	if (value === null)
-		return error;
+		return false;
 
 	let type = typeof value;
 
 	if (type === 'undefined' || type === 'null')
-		return error;
+		return false;
 
 	if (/(string|array|number)/.test(type) === false)
-		return error;
+		return false;
 
 	if (value.toString().length === 0)
-		return error;
+		return false;
+
+	return true;
 }
 
 
-export function regexp(rules, value, data, vmv) {
-	let error = vmv.messages.regexp.replace('{rule}', rules.regexp);
-
-	if (rules.regexp instanceof RegExp === false) {
-		console.warn('Not a valid regular expression rule: '+ rules.regexp);
-		return error;
-	}
-
+export function regexp(rule, value) {
 	if (value === undefined || value === null)
-		return;
+		return true;
 
-	if ((new RegExp(rules.regexp)).test(value) === false)
-		return error;
+	if ((new RegExp(rule)).test(value) === false)
+		return false;
+
+	return true;
 }
 
 
-export function min(rules, value, data, vmv) {
-	let error = vmv.messages.min.replace('{rule}', rules.min);
-
-	if (typeof rules.min !== 'number') {
-		console.warn('Not a valid min rule:'+ rules.min);
-		return error;
-	}
-
+export function min(rule, value) {
 	if (value === undefined || value === null)
-		return;
+		return true;
 
 	if (typeof value !== 'number')
-		return error;
+		return false;
 
-	if (value < rules.min)
-		return error;
+	if (value < rule)
+		return false;
+
+	return true;
 }
 
 
-export function max(rules, value, data, vmv) {
-	let error = vmv.messages.max.replace('{rule}', rules.max);
-
-	if (typeof rules.max !== 'number') {
-		console.warn('Not a valid max rule: '+ rules.max);
-		return error;
-	}
-
+export function max(rule, value) {
 	if (value === undefined || value === null)
-		return;
+		return true;
 
 	if (typeof value !== 'number')
-		return error;
+		return false;
 
-	if (value > rules.max)
-		return error;
+	if (value > rule)
+		return false;
 
-	return false;
+	return true;
 }
 
 
-export function minlen(rules, value, data, vmv) {
-	let error = vmv.messages.minlen.replace('{rule}', rules.minlen);
-
-	if (typeof rules.minlen !== 'number') {
-		console.warn('Not a valid minlen rule:'+ rules.minlen);
-		return error;
-	}
-
+export function minlen(rule, value) {
 	if (value === undefined || value === null)
-		return;
+		return true;
 
 	if (/(string|array)/.test(typeof value) === false)
-		return error;
+		return false;
 
-	if (value.length > 0 && value.length < rules.minlen)
-		return error;
+	if (value.length > 0 && value.length < rule)
+		return false;
+
+	return true;
 }
 
 
-export function maxlen(rules, value, data, vmv) {
-	let error = vmv.messages.maxlen.replace('{rule}', rules.maxlen);
-
-	if (typeof rules.maxlen !== 'number') {
-		console.warn('Not a valid maxlen rule: '+ rules.maxlen);
-		return error;
-	}
-
+export function maxlen(rule, value) {
 	if (value === undefined || value === null)
-		return;
+		return true;
 
 	if (/(string|array)/.test(typeof value) === false)
-		return error;
+		return false;
 
-	if (value.length > rules.maxlen)
-		return error;
+	if (value.length > rule)
+		return false;
+
+	return true;
 }
 
 
-export function length(rules, value, data, vmv) {
-	let error = vmv.messages.length.replace('{rule}', rules.length);
-
-	if (typeof rules.length !== 'number') {
-		console.warn('Not a valid length rule: '+ rules.length);
-		return error;
-	}
-
+export function length(rule, value) {
 	if (value === undefined || value === null)
-		return;
+		return true;
 
 	let type = typeof value;
 
 	if (/(string|array|number)/.test(type) === false)
-		return error;
+		return false;
 
-	if (type === 'array' && value.length !== rules.length)
-		return error;
+	if (type === 'array' && value.length !== rule)
+		return false;
 
-	if (value.toString().length !== rules.length)
-		return error;
+	if (value.toString().length !== rule)
+		return false;
+
+	return true;
 }
 
 
-export function equals(rules, value, data, vmv) {
-	let error = vmv.messages.equals.replace('{rule}', rules.equals.split('.').slice(-1)[0]);
-
-	if (typeof rules.equals !== 'string') {
-		console.warn('Not a valid equals rule:'+ rules.equals);
-		return error;
-	}
-
+export function equals(rule, value) {
 	if (value === undefined || value === null)
-		return;
+		return true;
 
-	let value2 = vmv.pathToObject(rules.equals, data);
+	let value2 = this.$vd.$getPath(rule).$data;
 
 	if (typeof value2 === 'undefined' && typeof value !== 'undefined')
-		return error;
+		return false;
 
 	if (value2.toString() !== value.toString())
-		return error;
+		return false;
+
+	return true;
 }
 
 
-export function isin(rules, value, data, vmv) {
-	let error = vmv.messages.isin.replace('{rule}', rules.isin);
-
-	if (!Array.isArray(rules.isin)) {
-		console.warn('Not a valid enumerator rule:'+ rules.isin);
-		return error;
-	}
-
+export function isin(rule, value) {
 	if (value === undefined || value === null)
-		return;
+		return true;
 
-	if (rules.isin.indexOf(value) === -1)
-		return error;
+	if (rule.indexOf(value) === -1)
+		return false;
+
+	return true;
 }
