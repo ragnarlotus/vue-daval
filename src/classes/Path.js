@@ -32,14 +32,28 @@ export default class Path {
 		if (prop in obj)
 			return this[prop];
 
-		if (prop === '$validated' && this.$result)
-			return this.$result.$validated;
+		if (this.$hasRules()) {
+			if (prop === '$validated')
+				return this.$result.$validated;
 
-		if (prop === '$error' && this.$result)
-			return this.$result.$error;
+			if (prop === '$error')
+				return this.$result.$error;
 
-		if (this.$hasRules() && prop in this.$rules)
-			return this.$rules[prop];
+			if (prop === '$errors')
+				return this.$result.$getErrors();
+
+			if (prop in this.$rules)
+				return this.$rules[prop];
+
+		} else if (prop === '$errors') {
+			let errors = {};
+
+			this.$validations.forEach((validation) => {
+				errors[validation.$toString()] = validation.$errors;
+			});
+
+			return errors;
+		}
 
 		let childPath = this.$path.concat(prop);
 
