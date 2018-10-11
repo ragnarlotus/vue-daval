@@ -70,7 +70,8 @@ export default class Task {
 			valid = validator.call(validation.$vm, validation.$data);
 
 		} else {
-			return;
+			console.warn('Rule '+ ruleName +' not valid');
+			valid = true;
 		}
 
 		if (Utils.isPromise(valid) === true) {
@@ -110,11 +111,7 @@ export default class Task {
 		if (this.validations.length > 0)
 			return;
 
-		if (this.valid)
-			this.onSuccess();
-
-		else
-			this.onError();
+		this.valid? this.onSuccess() : this.onError();
 
 		this.path.$vm.$forceUpdate();
 
