@@ -70,11 +70,11 @@
 </template>
 
 <script>
-	import vd from './mixins/VueDaval.js';
+	import VueDaval from './mixins/VueDaval.js';
 
 	export default {
 		name: 'app',
-		mixins: [ vd ],
+		mixins: [ VueDaval ],
 
 		data: () => ({
 			result: {
@@ -124,19 +124,6 @@
 				password: { required: true, minlen: 5, links: 'register.passwordRepeat' },
 				passwordRepeat: { required: true, equals: 'register.password' }
 			}
-		},
-
-		mounted() {
-			//console.clear();
-			//this.$vd.prueba.$validate()
-
-			//console.log(this);
-			//console.log(this._data.login.__ob__.dep.constructor.target);
-
-			//console.log(this.$vd);
-			//console.log(this.$vd.$paths);
-			//console.log(this.$vd.$errors);
-			//console.log(this.$vd.$getPath('').$validations);
 		},
 
 		methods: {

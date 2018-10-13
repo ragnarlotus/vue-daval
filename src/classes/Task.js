@@ -2,12 +2,12 @@
 
 import * as Utils from '../libraries/Utils.js';
 
-let $vm, $vd, $vdValidators;
+let $vm, $vd, $vdConfig, $vdValidators;
 
 export default class Task {
 
 	constructor(vd, path, revalidate) {
-		({$vm, $vd, $vdValidators} = vd.$defVars());
+		({$vm, $vd, $vdConfig, $vdValidators} = vd.$defVars());
 
 		this.promise = new Promise((resolve, reject) => {
 			this.onSuccess = resolve;
@@ -31,6 +31,11 @@ export default class Task {
 		let validations = [].concat(this.validations);
 
 		validations.forEach((validation) => {
+			if ($vdConfig.skipNextValidationsOnError && this.valid === false) {
+				this.validations.length = validations.length = 0;
+				return;
+			}
+
 			this.checkValidation(validation);
 		});
 
