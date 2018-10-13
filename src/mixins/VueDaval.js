@@ -14,7 +14,6 @@ export default {
 		this.$vd.$addPath(path);
 
 		new ComputedPath(this, [], this._computedWatchers, this.$options.vdRules);
-		//this.$vd.$addPath(path);
 	},
 
 	beforeDestroyed() {
@@ -24,6 +23,7 @@ export default {
 	},
 
 	vdConfig: {
+		skipNextValidationsOnError: false,
 		skipNextRulesOnError: false
 	},
 
