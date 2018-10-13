@@ -1,110 +1,105 @@
-TODO
-
-links
-vuelidate validations
-computed data
-
-
 ## Overview
 
-This is a Vue data validator, developed with the lack of other valiadtors in mind.
+This is a Vue data validator, developed with the lack of other validators in mind and is built on top of ES6 trying to achieve the best architecture.
 
 ## Demo
 
-You can view a [demo here](https://deulos.github.io/vuejs-model-validator/).
+You can view a [demo and examples here](https://deulos.github.io/vue-daval/).
 
 ## Features
 | Feature | Description |
 |---------|-------------|
 | Template agnostic | No matter what template library you use, this validator will simply work |
-| Simplicity | Focused in developer easiness to save time and headaches |
-| Reactivity persistance | When data is loaded from server you can set it without worring, it will restore the watchers |
+| Simplicity | Focused in developer easiness to save time and code |
+| Dynamic | Validations can be run on defined circumstances |
+| Reactivity persistance | When data is replaced there is no worring, it will restore the watchers |
 | Data tree | If you have nested data objects to validate, this mixin will deal with it without trouble |
-| Performance | If a validation in value fails will not run the rest of validations for the value, reducing time and processing considerably |
-| Promises | Will detect if the returned validation is a promise and handle properly without need of external packages |
-| Real time | I have found that in some validators the results are showed in the next tick. This mixin forces the render to be updated once the validations are finished so no delays on result are produced |
-| Async validations | If a typing is being validated against a resource it will control the times in order to ensure that the last one is the validation that prevails against the previuos |
-| Revalidations | It controls whether a validation is performed or not, so if the value does not change it will not be validated again, saving time and processing |
-| Dependencies free | Its just ~25KB minified and served as mixin just with vue as dependency in order to reduce the processing, time and load. It is set out to accomplish most of the use cases so it is adapted to common use needs |
+| Maximum customization | Trying always to be as open and configurable as possible, validations, messages and behaviour |
+| Performance | It is developed with performance in mind, reducing time and processing considerably |
+| Promises | Will detect promises and handle properly without need of external packages |
+| Real time | Some validators show the results  in next tick, so they are not displayed. This updates the code once the validations are finished |
+| Async validations | If a typing is being validated against a resource it will control the times |
+| Revalidations | It controls whether a validation is performed or not and needs to revalide |
+| Dependencies free | Its just ~40 KB minified and served as mixin just with vue as dependency |
 | Community open | Feel free to contribute or bring suggestions, any improvement will be at least taken in mind, discussed and accepted if reasonable, just keep the the previous rules in mind |
 
 ## Quickstart
 
 ``` bash
-npm install --save vuejs-model-validator
+npm install --save vue-daval
 ```
 
 ``` html
-<form @submit.prevent="validateLogin" class="login">
-   <input name="email" v-model="login.email">
-   <input type="password" name="password" v-model="login.password">
+<form @submit.prevent="doLogin">
+   <input v-model="login.email">
+   <input type="password" v-model="login.password">
 
    <button type="submit">Login</button>
 </form>
 
-<form @submit.prevent="validateRegister" class="register">
-   <input name="alias" v-model="register.alias">
-   <input type="email" name="email" v-model="register.email">
-   <input type="password" name="password" v-model="register.password">
-   <input type="password" name="passwordRepeat" v-model="register.passwordRepeat">
+<form @submit.prevent="doRegister">
+   <input v-model="register.alias">
+   <input type="email" v-model="register.email">
+   <input type="password" v-model="register.password">
+   <input type="password" v-model="register.passwordRepeat">
 
    <button type="submit">Register</button>
 </form>
 ```
 
 ``` javascript
-import vmv from 'vuejs-model-validator';
+import VueDaval from 'vue-daval';
 
 export default {
-   mixins: [ vmv ],
+   mixins: [ VueDaval ],
 
    data: () => ({
       login: {
-         email: null,
-         password: null
+         email: undefined,
+         password: undefined
       },
 
       register: {
-         alias: null,
-         email: null,
-         password: null,
-         passwordRepeat: null
+         alias: undefined,
+         email: undefined,
+         password: undefined,
+         passwordRepeat: undefined
       }
    }),
 
    validations: {
       login: {
          email: { required: true, type: 'email' },
-         password: { required: true, minlen: 5 },
+         password: { required: true, minlen: 5 }
       },
 
       register: {
-         alias: { required: true, minlen: 5, checkAlias: (vm, alias) => {
-            return vm.$http.post('/users/check/alias', { alias: alias });
+         alias: { required: true, minlen: 5, checkAlias: (alias) => {
+            return alias === 'admin'? 'Alias already in use' : true;
          }},
-         email: { required: true, type: 'email', checkEmail: (vm, email) => {
-            return vm.$http.post('/users/check/email', { email: email });
+         email: { required: true, type: 'email', checkEmail: (email) => {
+            return this.$http.post('/users/check/email', { email: email });
          }},
-         password: { required: true, minlen: 5 },
+         password: { required: true, minlen: 5, links: 'register.passwordRepeat' },
          passwordRepeat: { required: true, equals: 'register.password' }
       }
    },
 
    methods: {
-      validateLogin() {
-         this.$vmv.$validate('login', () => {
+      doLogin() {
+         this.$vd.login.$validate().then(() => {
             this.$http.post('/users/login', this.login);
 
-         }, () => {
+         }).catch(() => {
             alert('Error in login form');
          });
       },
 
-      validateRegister() {
-         this.$vmv.$validate('register', () => {
+      doRegister() {
+         this.$vd.register.$validate().then(() => {
             this.$http.post('/users/register', this.register);
 
-         }, () => {
+         }).catch(() => {
             alert('Error in register form');
          });
       }
@@ -114,7 +109,7 @@ export default {
 
 ## Performance
 
-Weight is just 25KB so is pretty light and is tweaked to be as fast as possible.
+Weight is just 40 KB so is pretty light and is tweaked to be as fast as possible keeping code readability, developed with ES6 syntax and built with Vue CLI 3.
 
 ## Included validations
 
@@ -127,19 +122,17 @@ Weight is just 25KB so is pretty light and is tweaked to be as fast as possible.
 * Maximum length: check if value lengh is less than the number specified.
 * Length: check if value lengh is exactly the number specified.
 * Equals: check if value equals another value.
-* Is in: check if value is one of an array.
+* Is: check if value is a given one.
+* Is not: check if value is not a given one.
+* Is in: check if value is in a string or one element of an array.
 
 ## Troubleshooting
 
-If you find yourself running into issues during installation or running the validator, please check our [Wiki](https://github.com/deulos/vuejs-model-validator/wiki). If still needs help open an [issue](https://github.com/deulos/vuejs-model-validator/issues/new). We would be happy to discuss how they can be solved.
+If you find yourself running into issues during installation or running the validator, please check our [Wiki](https://github.com/deulos/vue-daval/wiki). If still need help open an [issue](https://github.com/deulos/vue-daval/issues/new). We would be happy to discuss how they can be solved.
 
 ## Documentation
 
-You can view the full documentation at the project's [Wiki](https://github.com/deulos/vuejs-model-validator/wiki) with examples and detailed information.
-
-## Inspiration
-
-This slider was inspired by [async-validator](https://github.com/yiminghe/async-validator).
+You can view the full documentation at the project's [Wiki](https://github.com/deulos/vue-daval/wiki) with examples and detailed information.
 
 ## Contributing
 
