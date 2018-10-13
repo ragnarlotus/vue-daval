@@ -2,9 +2,13 @@
 
 import * as Utils from '../libraries/Utils.js';
 
+let $vm, $vd, $vdValidators;
+
 export default class Task {
 
-	constructor(path, revalidate, propagate) {
+	constructor(vd, path, revalidate) {
+		({$vm, $vd, $vdValidators} = vd.$defVars());
+
 		this.promise = new Promise((resolve, reject) => {
 			this.onSuccess = resolve;
 			this.onError = reject;
@@ -12,7 +16,6 @@ export default class Task {
 
 		this.path = path;
 		this.revalidate = revalidate;
-		this.propagate = propagate;
 		this.validations = [].concat(this.path.$validations);
 		this.valid = true;
 
@@ -57,17 +60,18 @@ export default class Task {
 	checkValidationRule(validation, ruleName) {
 		let valid = false;
 		let ruleValue = validation.$rules[ruleName];
-		let validator = validation.$vm.$options.vdValidators[ruleName];
+		let validator = $vdValidators[ruleName];
+		let data = validation.$data;
 
 		if (validator !== undefined) {
 			if (Utils.isFunction(ruleValue))
-				ruleValue = ruleValue.call(validation.$vm);
+				ruleValue = ruleValue.call($vm);
 
-			valid = validator.call(validation.$vm, ruleValue, validation.$data);
+			valid = validator.call($vm, ruleValue, data);
 
 		} else if (Utils.isFunction(ruleValue)) {
 			validator = validation.$rules[ruleName];
-			valid = validator.call(validation.$vm, validation.$data);
+			valid = validator.call($vm, data);
 
 		} else {
 			console.warn('Rule '+ ruleName +' not valid');
@@ -113,9 +117,9 @@ export default class Task {
 
 		this.valid? this.onSuccess() : this.onError();
 
-		this.path.$vm.$forceUpdate();
+		$vm.$forceUpdate();
 
-		this.path.$vm.$vd.$removeTask(this);
+		$vd.$removeTask(this);
 	}
 
 };

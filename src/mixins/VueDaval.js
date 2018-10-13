@@ -1,5 +1,6 @@
 import Core from '../classes/Core.js';
-import Path from '../classes/Path.js';
+import DataPath from '../classes/Paths/DataPath.js';
+import ComputedPath from '../classes/Paths/ComputedPath.js';
 import * as Validators from '../libraries/Validators.js';
 
 export default {
@@ -7,8 +8,13 @@ export default {
 	beforeMount() {
 		this.$vd = new Core(this);
 
-		let path = new Path(this, [], this._data, this.$options.vdRules);
+		let path;
+
+		path = new DataPath(this, [], this._data, this.$options.vdRules);
 		this.$vd.$addPath(path);
+
+		new ComputedPath(this, [], this._computedWatchers, this.$options.vdRules);
+		//this.$vd.$addPath(path);
 	},
 
 	beforeDestroyed() {
@@ -35,7 +41,8 @@ export default {
 		maxlen: 'Maximun length is {rule}',
 		length: 'Length must be {rule}',
 		equals: 'Must equal the field {rule}',
-		enum: 'Must be one of {rule}'
+		enum: 'Must be one of {rule}',
+		undefined: 'Undefined error'
 	}
 
 };

@@ -3,29 +3,19 @@
 import * as Utils from '../libraries/Utils.js';
 import Result from './Result.js';
 
+let $vm, $vd;
+
 export default class Path {
 
-	constructor(vm, path, data, rules, parent) {
-		this.$vm = vm;
+	constructor(vd, path, data, rules) {
+		({$vm, $vd} = vd.$defVars());
+
 		this.$path = path;
 		this.$data = data;
 		this.$rules = rules;
-		this.$parent = parent;
 		this.$validations = [];
 
-		this.$createWatcher();
-
-		let numPaths = this.$vm.$vd.$paths.size;
-
-		this.$createChilds();
-
-		if (numPaths === this.$vm.$vd.$paths.size) {
-			this.$result = new Result(this);
-
-			this.$parent.$addValidation(this);
-		}
-
-		return new Proxy(this, this);
+		this.$proxy = new Proxy(this, this);
 	}
 
 	get(obj, prop) {
@@ -34,22 +24,26 @@ export default class Path {
 
 		if (this.$hasRules()) {
 			if (prop === '$validated')
-				return this.$result.$validated;
+				return this.$result.validated;
 
 			if (prop === '$error')
-				return this.$result.$error;
+				return this.$result.error;
 
 			if (prop === '$errors')
-				return this.$result.$getErrors();
+				return this.$result.getErrors();
 
 			if (prop in this.$rules)
 				return this.$rules[prop];
 
 		} else if (prop === '$errors') {
 			let errors = {};
+			let validationErrors;
 
 			this.$validations.forEach((validation) => {
-				errors[validation.$toString()] = validation.$errors;
+				validationErrors = validation.$errors;
+
+				if (Object.keys(validationErrors).length > 0)
+					errors[validation.$toString()] = validationErrors;
 			});
 
 			return errors;
@@ -57,7 +51,7 @@ export default class Path {
 
 		let childPath = this.$path.concat(prop);
 
-		return this.$vm.$vd.$getPath(childPath);
+		return $vd.$getPath(childPath);
 	}
 
 	$hasRules() {
@@ -67,72 +61,61 @@ export default class Path {
 	$getRules() {
 		let rules = Object.keys(this.$rules);
 
-		return rules.filter(rule => rule !== 'message' && rule !== 'field');
+		let reserved = ['message', 'field', 'links', 'linksThen', 'linksCatch'];
+
+		return rules.filter(rule => reserved.includes(rule) === false);
 	}
 
 	$addValidation(path) {
 		this.$validations.push(path);
 
 		if (this.$parent !== undefined)
-			this.$parent.$addValidation(this);
-	}
-
-	$createChilds() {
-		let child;
-
-		if (Utils.isObject(this.$data)) {
-			Object.keys(this.$rules).forEach((key) => {
-				child = new Path(this.$vm, this.$path.concat(key), this.$data[key], this.$rules[key], this);
-
-				this.$vm.$vd.$addPath(child);
-			});
-
-		} else if (Utils.isArray(this.$data)) {
-			this.$data.forEach((item, index) => {
-				child = new Path(this.$vm, this.$path.concat(index), item, this.$rules, this);
-
-				this.$vm.$vd.$addPath(child);
-			});
-		}
+			this.$parent.$addValidation(path);
 	}
 
 	$reset() {
 		this.$validations.forEach((validation) => {
-			child.$reset(propagate);
+			child.$reset();
 		});
 
 		if (this.$result !== undefined)
 			this.$result.reset();
 	}
 
-	$createWatcher() {
-		if (this.$watcher)
-			this.$watcher();
+	$validate(revalidate = false) {
+		let result = $vd.$addTask(this.$proxy, revalidate).promise;
 
-		if (this.$path.length === 0)
+		result.then(() => {
+			this.$validateLinks(this.$rules.linksThen);
+
+		}).catch(() => {
+			this.$validateLinks(this.$rules.linksCatch);
+
+		}).finally(() => {
+			this.$validateLinks(this.$rules.links);
+		})
+
+		return result;
+	}
+
+	$validateLinks(links) {
+		if (links === undefined)
 			return;
 
-		this.$watcher = this.$vm.$watch(this.$toString(), (value) => {
-			this.$data = value;
-			this.$validate(true, false).then(() => {}).catch(() => {});
+		links = Utils.isArray(links)? links : [links];
+
+		let path;
+
+		links.forEach((link) => {
+			path = $vd.$getPath(link);
+
+			if (path !== undefined)
+				path.$validate(true);
 		});
-	}
-
-	$removeWatcher() {
-		if (this.$watcher)
-			this.$watcher();
-
-		this.$watcher = undefined;
-	}
-
-	$validate(revalidate = false, propagate = true) {
-		let task = this.$vm.$vd.$addTask(this, revalidate, propagate);
-
-		return task.promise;
 	}
 
 	$toString() {
 		return this.$path.join('.');
 	}
 
-};
+}

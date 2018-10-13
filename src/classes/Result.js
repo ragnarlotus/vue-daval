@@ -2,11 +2,14 @@
 
 import * as Utils from '../libraries/Utils.js';
 
+let $vdConfig, $vdMessages;
+
 export default class Result {
 
-	constructor(path) {
-		this.$path = path;
-		this.$skipNextRulesOnError = this.$path.$vm.$options.vdConfig.skipNextRulesOnError;
+	constructor(vd, path) {
+		({$vdConfig, $vdMessages} = vd.$defVars());
+
+		this.path = path;
 
 		this.reset();
 	}
@@ -22,60 +25,64 @@ export default class Result {
 		if (valid !== true)
 			error = this.getMessage(rule, error);
 
-		this.$rules.set(rule, error);
+		this.rules.set(rule, error);
 
-		if (valid !== true && this.$error === undefined)
-			this.$error = error;
+		if (valid !== true && this.error === undefined)
+			this.error = error;
 
-		if (this.$numRules === this.$rules.size || (this.$error && this.$skipNextRulesOnError))
-			this.$validated = true;
+		if (this.numRules === this.rules.size || (this.error && $vdConfig.skipNextRulesOnError))
+			this.validated = true;
 	}
 
 	getMessage(rule, message) {
-		if (!message)
-			message = this.$path.$rules['message'];
+		let path = this.path;
 
 		if (!message)
-			message = this.$path.$vm.$options.vdMessages[rule];
+			message = path.$rules['message'];
 
 		if (!message)
-			return '';
+			message = $vdMessages[rule];
 
-		let field = this.$path.$rules['field'];
+		if (!message)
+			return $vdMessages['undefined'];
 
-		if (field === undefined)
-			field = this.$path.$path.slice(-1)[0];
+		let field = path.$rules['field'] || path.$path.slice(-1)[0];
 
-		message = message.replace('{field}', this.$path.$path.slice(-1)[0]);
-		message = message.replace('{rule}', this.$path.$rules[rule]);
+		message = message.replace('{field}', field);
+
+		rule = path.$rules[rule].toString();
+
+		rule = rule.split('.').slice(-1)[0];
+
+		message = message.replace('{rule}', rule);
 
 		return message;
 	}
 
 	hasError() {
-		return this.$error !== undefined;
+		return this.error !== undefined;
 	}
 
 	getError(rule) {
-		this.$rules.get(rule);
+		this.rules.get(rule);
 	}
 
 	getErrors() {
 		let errors = {};
 
-		this.$rules.forEach((error, rule) => {
+		this.rules.forEach((error, rule) => {
 			if (error)
-				errors[rule] = error
+				errors[rule] = error;
 		});
 
 		return errors;
 	}
 
 	reset() {
-		this.$rules = new Map;
-		this.$numRules = this.$path.$getRules().length;
-		this.$validated = false;
-		this.$error = undefined;
+		this.rules = new Map;
+		this.numRules = this.path.$getRules().length;
+		this.validated = false;
+		this.error = undefined;
 	}
 
 };
