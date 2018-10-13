@@ -26,12 +26,7 @@
 					</form>
 				</section>
 
-				<pre>{{ prueba }}</pre>
-
-				<pre>{{ $vd.prueba.$errors }}</pre>
-
 				<section class="register mb-5">
-					<div v-show="$vd.prueba.$error" class="invalid-feedback">{{ $vd.prueba.$error }}</div>
 				</section>
 			</div>
 
@@ -107,18 +102,18 @@
 
 		computed: {
 			prueba() {
-				return this.login.email +''+ this.login.password;
+				let email = this.login.email || '';
+				let password = this.login.password || '';
+
+				return email + password;
 			}
 		},
 
 		vdRules: {
-			prueba: { required: true, minlen: 5 },
-/*
 			login: {
 				email: { required: true, type: 'email' },
 				password: { required: true, minlen: 5 }
 			},
-*/
 			register: {
 				alias: { required: true, minlen: 5, checkAlias: (alias) => {
 					return alias === 'admin'? 'Alias already in use' : true;
@@ -137,8 +132,9 @@
 
 			//console.log(this);
 			//console.log(this._data.login.__ob__.dep.constructor.target);
-			//console.log(this._computedWatchers.prueba);
+
 			//console.log(this.$vd);
+			//console.log(this.$vd.$paths);
 			//console.log(this.$vd.$errors);
 			//console.log(this.$vd.$getPath('').$validations);
 		},
