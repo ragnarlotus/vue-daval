@@ -1,3 +1,10 @@
+TODO
+
+links
+vuelidate validations
+computed data
+
+
 ## Overview
 
 This is a Vue data validator, developed with the lack of other valiadtors in mind.
