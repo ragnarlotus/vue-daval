@@ -168,6 +168,28 @@ export function equals(rule, value) {
 }
 
 
+export function is(rule, value) {
+	if (value === undefined || value === null)
+		return true;
+
+	if (rule != value)
+		return false;
+
+	return true;
+}
+
+
+export function isnot(rule, value) {
+	if (value === undefined || value === null)
+		return true;
+
+	if (rule == value)
+		return false;
+
+	return true;
+}
+
+
 export function isin(rule, value) {
 	if (value === undefined || value === null)
 		return true;

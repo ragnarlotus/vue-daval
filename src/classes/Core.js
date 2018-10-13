@@ -2,11 +2,16 @@
 
 import * as Utils from '../libraries/Utils.js';
 import Path from './Path.js';
+import UndefinedPath from './Paths/UndefinedPath.js';
 import Task from './Task.js';
+
+let $vm;
 
 export default class Core {
 
-	constructor() {
+	constructor(vm) {
+		$vm = vm;
+
 		this.$paths = new Map;
 		this.$tasks = new Map;
 
@@ -14,7 +19,17 @@ export default class Core {
 	}
 
 	get(obj, prop) {
-		return this[prop] || this.$getPath(prop);
+		return this[prop] || this.$getPath(prop) || new UndefinedPath(prop);
+	}
+
+	$defVars() {
+		return {
+			$vm: $vm,
+			$vd: this,
+			$vdConfig: $vm.$options.vdConfig,
+			$vdMessages: $vm.$options.vdMessages,
+			$vdValidators: $vm.$options.vdValidators
+		};
 	}
 
 	$addPath(path) {
@@ -25,10 +40,11 @@ export default class Core {
 		if (Utils.isArray(path))
 			path = path.join('.');
 
+		if (['$errors', '$reset', '$validate'].includes(path))
+			return this.$paths.get('')[path];
+
 		if (this.$paths.has(path))
 			return this.$paths.get(path);
-
-		console.error('Rules not defined for '+ path);
 
 		return undefined;
 	}
@@ -42,14 +58,11 @@ export default class Core {
 		}
 	}
 
-	$addTask(path, revalidate, propagate) {
-		if (path.$hasRules() === false && propagate === false)
-			return;
-
+	$addTask(path, revalidate) {
 		let task = this.$tasks.get(path.$toString());
 
 		if (task === undefined) {
-			task = new Task(path, revalidate, propagate);
+			task = new Task(this, path, revalidate);
 
 			this.$tasks.set(path.$toString(), task);
 		}
