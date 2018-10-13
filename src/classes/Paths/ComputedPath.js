@@ -1,8 +1,9 @@
 // ComputedPath extends Path
 
 import Path from '../Path.js';
+import DataPath from './DataPath.js';
 
-let $vm, $vd, cw, cb;
+let $vm, $vd;
 
 export default class ComputedPath extends Path {
 
@@ -11,46 +12,22 @@ export default class ComputedPath extends Path {
 
 		super($vd, path, data, rules);
 
-		if (this.$data.cb)
-			this.$createWatcher();
-
-		else
-			this.$createChilds();
+		this.$createChilds();
 
 		return this.$proxy;
 	}
 
 	$createChilds() {
 		let child;
+		let parent = $vd.$getPath('');
 
 		Object.keys(this.$rules).forEach((key) => {
 			if (key in this.$data) {
-				child = new ComputedPath($vm, this.$path.concat(key), this.$data[key], this.$rules[key]);
+				child = new DataPath($vm, this.$path.concat(key), this[key], this.$rules[key], parent);
 
 				$vd.$addPath(child);
 			}
 		});
-	}
-
-	$createWatcher() {
-		if (this.$watcher)
-			this.$watcher();
-
-		if (this.$path.length === 0)
-			return;
-
-		this.$watcher = $vm.$watch(this.$toString(), (value) => {
-			this.$data = value;
-
-			this.$validate(true);
-		});
-	}
-
-	$removeWatcher() {
-		if (this.$watcher)
-			this.$watcher();
-
-		this.$watcher = undefined;
 	}
 
 }
