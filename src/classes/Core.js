@@ -1,7 +1,6 @@
 // Core class
 
 import * as Utils from '../libraries/Utils.js';
-import Path from './Path.js';
 import UndefinedPath from './Paths/UndefinedPath.js';
 import Task from './Task.js';
 

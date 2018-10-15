@@ -32,7 +32,8 @@ export default class Task {
 
 		validations.forEach((validation) => {
 			if ($vdConfig.skipNextValidationsOnError && this.valid === false) {
-				this.validations.length = validations.length = 0;
+				this.validations = validations = [];
+
 				return;
 			}
 

@@ -12,7 +12,8 @@ export default class ComputedPath extends Path {
 
 		super($vd, path, data, rules);
 
-		this.$createChilds();
+		if (this.$data)
+			this.$createChilds();
 
 		return this.$proxy;
 	}

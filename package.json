@@ -1,6 +1,6 @@
 {
   "name": "vue-daval",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "Vue data validator",
   "author": "ragnar lotus",
   "repository": {
@@ -10,8 +10,10 @@
   "keywords": [
     "vue",
     "data",
-    "validator",
-    "model"
+    "form",
+    "model",
+    "input",
+    "validator"
   ],
   "license": "MIT",
   "bugs": {
@@ -28,7 +30,9 @@
     "dist"
   ],
   "dependencies": {
-    "vue": "^2.5.17"
+    "bootstrap-vue": "^2.0.0-rc.11",
+    "vue": "^2.5.17",
+    "vue-highlightjs": "^1.3.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.4",
