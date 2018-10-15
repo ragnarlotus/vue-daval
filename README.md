@@ -17,8 +17,8 @@ You can view a [demo and examples here](https://deulos.github.io/vue-daval/).
 | Maximum customization | Trying always to be as open and configurable as possible, validations, messages and behaviour |
 | Performance | It is developed with performance in mind, reducing time and processing considerably |
 | Promises | Will detect promises and handle properly without need of external packages |
-| Real time | Some validators show the results  in next tick, so they are not displayed. This updates the code once the validations are finished |
-| Async validations | If a typing is being validated against a resource it will control the times |
+| Real time | Some validators show the results  in next tick, so they are not displayed. This component updates the template once the validations are finished |
+| Async validations | If multiple validations are done it will control the times |
 | Revalidations | It controls whether a validation is performed or not and needs to revalide |
 | Dependencies free | Its just ~40 KB minified and served as mixin just with vue as dependency |
 | Community open | Feel free to contribute or bring suggestions, any improvement will be at least taken in mind, discussed and accepted if reasonable, just keep the the previous rules in mind |
@@ -67,7 +67,7 @@ export default {
       }
    }),
 
-   validations: {
+   vdRules: {
       login: {
          email: { required: true, type: 'email' },
          password: { required: true, minlen: 5 }

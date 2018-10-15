@@ -1,7 +1,6 @@
 // Path class
 
 import * as Utils from '../libraries/Utils.js';
-import Result from './Result.js';
 
 let $vm, $vd;
 
