@@ -2,9 +2,7 @@
 	<div>
 		<h1>Examples</h1>
 
-		<basic-validation class="example" :get-input-class="getInputClass"></basic-validation>
-		<groups-validation class="example" :get-input-class="getInputClass"></groups-validation>
-
+		<component v-for="example in examples" :key="example" :is="example" class="example" :get-input-class="getInputClass"></component>
 	</div>
 </template>
 
@@ -44,9 +42,31 @@
 			Configurations
 		},
 
+		data: () => ({
+			examples: [
+				'BasicValidation',
+				'GroupsValidation',
+				'NestedValidations',
+				'DynamicValidation',
+				'CustomValidation',
+				'Links',
+				'OwnValidators',
+				'CustomMessages',
+				'SpecificMessage',
+				'Result',
+				'ValidationResult',
+				'ResetResult',
+				'Errors',
+				'Configurations',
+			]
+		}),
+
 		methods: {
 			getInputClass(field) {
 				let css = 'form-control';
+
+				if (field === undefined)
+					return css;
 
 				if (field['$error'])
 					css += ' is-invalid';
