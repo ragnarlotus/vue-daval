@@ -2,12 +2,13 @@
 
 import * as Utils from '../libraries/Utils.js';
 
-let $vm, $vd, $vdConfig, $vdValidators;
-
 export default class Task {
 
-	constructor(vd, path, revalidate) {
-		({$vm, $vd, $vdConfig, $vdValidators} = vd.$defVars());
+	constructor(vm, path, revalidate) {
+		this.$vm = vm;
+		this.$vd = vm.$vd;
+		this.$vdConfig = vm.$options.vdConfig;
+		this.$vdValidators = vm.$options.vdValidators;
 
 		this.promise = new Promise((resolve, reject) => {
 			this.onSuccess = resolve;
@@ -31,7 +32,7 @@ export default class Task {
 		let validations = [].concat(this.validations);
 
 		validations.forEach((validation) => {
-			if ($vdConfig.skipNextValidationsOnError && this.valid === false) {
+			if (this.$vdConfig.skipNextValidationsOnError && this.valid === false) {
 				this.validations = validations = [];
 
 				return;
@@ -66,18 +67,18 @@ export default class Task {
 	checkValidationRule(validation, ruleName) {
 		let valid = false;
 		let ruleValue = validation.$rules[ruleName];
-		let validator = $vdValidators[ruleName];
+		let validator = this.$vdValidators[ruleName];
 		let data = validation.$data;
 
 		if (validator !== undefined) {
 			if (Utils.isFunction(ruleValue))
 				ruleValue = ruleValue.call($vm);
 
-			valid = validator.call($vm, ruleValue, data);
+			valid = validator.call(this.$vm, ruleValue, data);
 
 		} else if (Utils.isFunction(ruleValue)) {
 			validator = validation.$rules[ruleName];
-			valid = validator.call($vm, data);
+			valid = validator.call(this.$vm, data);
 
 		} else {
 			console.warn('Rule '+ ruleName +' not valid');
@@ -123,9 +124,9 @@ export default class Task {
 
 		this.valid? this.onSuccess() : this.onError();
 
-		$vm.$forceUpdate();
+		this.$vm.$forceUpdate();
 
-		$vd.$removeTask(this);
+		this.$vd.$removeTask(this);
 	}
 
 };

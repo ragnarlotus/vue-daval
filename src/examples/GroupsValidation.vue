@@ -81,6 +81,10 @@
 				email: { required: true, type: 'email' },
 				password: { required: true, minlen: 5 }
 			}
+		},
+
+		mounted() {
+			//console.log(this);
 		}
 	}
 </script>

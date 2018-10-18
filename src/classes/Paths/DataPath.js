@@ -4,21 +4,17 @@ import Path from '../Path.js';
 import * as Utils from '../../libraries/Utils.js';
 import Result from '../Result.js';
 
-let $vm, $vd;
-
 export default class DataPath extends Path {
 
 	constructor(vm, path, data, rules, parent) {
-		({$vm, $vd} = vm.$vd.$defVars());
-
-		super($vd, path, data, rules);
+		super(vm, path, data, rules);
 
 		this.$parent = parent;
 
 		this.$createWatcher();
 
 		if (this.$createChilds() === false) {
-			this.$result = new Result($vd, this);
+			this.$result = new Result(vm, this);
 
 			this.$parent.$addValidation(this.$proxy);
 		}
@@ -34,10 +30,11 @@ export default class DataPath extends Path {
 			Object.keys(this.$rules).forEach((key) => {
 				childPath = this.$path.concat(key);
 
-				if (key in this.$data && $vd.$getPath(childPath) === undefined) {
-					child = new DataPath($vm, childPath, this.$data[key], this.$rules[key], this);
+				if (key in this.$data) {
+					child = new DataPath(this.$vm, childPath, this.$data[key], this.$rules[key], this);
 
-					$vd.$addPath(child);
+					this.$childs.push(child);
+					this.$vd.$addPath(child);
 				}
 			});
 
@@ -45,11 +42,10 @@ export default class DataPath extends Path {
 			this.$data.forEach((item, index) => {
 				childPath = this.$path.concat(index);
 
-				if ($vd.$getPath(childPath) === undefined) {
-					child = new DataPath($vm, childPath, item, this.$rules, this);
+				child = new DataPath(this.$vm, childPath, item, this.$rules, this);
 
-					$vd.$addPath(child);
-				}
+				this.$childs.push(child);
+				this.$vd.$addPath(child);
 			});
 		}
 
@@ -63,11 +59,25 @@ export default class DataPath extends Path {
 		if (this.$path.length === 0)
 			return;
 
-		this.$watcher = $vm.$watch(this.$toString(), (value) => {
-			if (Utils.isObject(this.$data) || Utils.isArray(this.$data))
-				return this.$createChilds();
+		this.$watcher = this.$vm.$watch(this.$toString(), (newValue, oldValue) => {
+/*			if (Utils.isObject(newValue) && '__ob__' in newValue)
+				return;
 
-			this.$data = value;
+			console.log('path', this.$toString());
+			console.log('oldValue', oldValue);
+			console.log('newValue', newValue);
+
+			if (Utils.isArray(this.$data)) {
+				this.$childs.forEach((child) => {
+					child.$removeWatcher();
+				});
+			}
+
+			if (Utils.isObject(this.$data) || Utils.isArray(this.$data)) {
+				return this.$createChilds();
+			}
+*/
+			this.$data = newValue;
 
 			this.$validate(true);
 		});

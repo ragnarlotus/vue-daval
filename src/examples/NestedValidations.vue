@@ -18,6 +18,7 @@
 						<input v-model="person.address" :class="$vd.persons[i]? getInputClass($vd.persons[i].address) : ''">
 						<div v-show="$vd.persons[i].address.$error" class="invalid-feedback">{{ $vd.persons[i].address.$error }}</div>
 					</div>
+					<button type="button" @click="removePerson(i)">Remove</button>
 				</div>
 
 				<button type="button" @click="addPerson()">Add</button>
@@ -61,9 +62,13 @@
 		methods: {
 			addPerson() {
 				this.persons.push({
-					name: 'xxx',
-					address: 'zzzz'
+					name: undefined,
+					address: undefined
 				});
+			},
+
+			removePerson(index) {
+				this.persons.splice(index, 1);
 			}
 		}
 	}

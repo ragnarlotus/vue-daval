@@ -4,12 +4,10 @@ import * as Utils from '../libraries/Utils.js';
 import UndefinedPath from './Paths/UndefinedPath.js';
 import Task from './Task.js';
 
-let $vm;
-
 export default class Core {
 
 	constructor(vm) {
-		$vm = vm;
+		this.$vm = vm;
 
 		this.$paths = new Map;
 		this.$tasks = new Map;
@@ -19,16 +17,6 @@ export default class Core {
 
 	get(obj, prop) {
 		return this[prop] || this.$getPath(prop) || new UndefinedPath(prop);
-	}
-
-	$defVars() {
-		return {
-			$vm: $vm,
-			$vd: this,
-			$vdConfig: $vm.$options.vdConfig,
-			$vdMessages: $vm.$options.vdMessages,
-			$vdValidators: $vm.$options.vdValidators
-		};
 	}
 
 	$addPath(path) {
@@ -61,7 +49,7 @@ export default class Core {
 		let task = this.$tasks.get(path.$toString());
 
 		if (task === undefined) {
-			task = new Task(this, path, revalidate);
+			task = new Task(this.$vm, path, revalidate);
 
 			this.$tasks.set(path.$toString(), task);
 		}
