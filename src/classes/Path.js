@@ -2,16 +2,16 @@
 
 import * as Utils from '../libraries/Utils.js';
 
-let $vm, $vd;
-
 export default class Path {
 
-	constructor(vd, path, data, rules) {
-		({$vm, $vd} = vd.$defVars());
+	constructor(vm, path, data, rules) {
+		this.$vm = vm;
+		this.$vd = vm.$vd;
 
 		this.$path = path;
 		this.$data = data;
 		this.$rules = rules;
+		this.$childs = [];
 		this.$validations = [];
 
 		this.$proxy = new Proxy(this, this);
@@ -50,7 +50,7 @@ export default class Path {
 
 		let childPath = this.$path.concat(prop);
 
-		return $vd.$getPath(childPath);
+		return this.$vd.$getPath(childPath);
 	}
 
 	$hasRules() {
@@ -82,7 +82,7 @@ export default class Path {
 	}
 
 	$validate(revalidate = false) {
-		let result = $vd.$addTask(this.$proxy, revalidate).promise;
+		let result = this.$vd.$addTask(this.$proxy, revalidate).promise;
 
 		result.then(() => {
 			this.$validateLinks(this.$rules.linksThen);
@@ -106,7 +106,7 @@ export default class Path {
 		let path;
 
 		links.forEach((link) => {
-			path = $vd.$getPath(link);
+			path = this.$vd.$getPath(link);
 
 			if (path !== undefined)
 				path.$validate(true);

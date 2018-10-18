@@ -2,12 +2,11 @@
 
 import * as Utils from '../libraries/Utils.js';
 
-let $vdConfig, $vdMessages;
-
 export default class Result {
 
-	constructor(vd, path) {
-		({$vdConfig, $vdMessages} = vd.$defVars());
+	constructor(vm, path) {
+		this.$vdConfig = vm.$options.vdConfig;
+		this.$vdMessages = vm.$options.vdMessages;
 
 		this.path = path;
 
@@ -30,7 +29,7 @@ export default class Result {
 		if (valid !== true && this.error === undefined)
 			this.error = error;
 
-		if (this.numRules === this.rules.size || (this.error && $vdConfig.skipNextRulesOnError))
+		if (this.numRules === this.rules.size || (this.error && this.$vdConfig.skipNextRulesOnError))
 			this.validated = true;
 	}
 
@@ -41,10 +40,10 @@ export default class Result {
 			message = path.$rules['message'];
 
 		if (!message)
-			message = $vdMessages[rule];
+			message = this.$vdMessages[rule];
 
 		if (!message)
-			return $vdMessages['undefined'];
+			return this.$vdMessages['undefined'];
 
 		let field = path.$rules['field'] || path.$path.slice(-1)[0];
 
