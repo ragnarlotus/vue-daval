@@ -44,8 +44,8 @@
 
 		data: () => ({
 			examples: [
-				'BasicValidation',
-				'GroupsValidation',
+				//'BasicValidation',
+				//'GroupsValidation',
 				'NestedValidations',
 				/*'DynamicValidation',
 				'CustomValidation',

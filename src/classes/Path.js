@@ -11,8 +11,8 @@ export default class Path {
 		this.$path = path;
 		this.$data = data;
 		this.$rules = rules;
-		this.$childs = [];
-		this.$validations = [];
+		this.$childs = new Map;
+		this.$validations = new Map;
 
 		this.$proxy = new Proxy(this, this);
 	}
@@ -65,11 +65,11 @@ export default class Path {
 		return rules.filter(rule => reserved.includes(rule) === false);
 	}
 
-	$addValidation(path) {
-		this.$validations.push(path);
+	$addValidation(child) {
+		this.$validations.set(child.$toString(), child);
 
 		if (this.$parent !== undefined)
-			this.$parent.$addValidation(path);
+			this.$parent.$addValidation(child);
 	}
 
 	$reset() {
