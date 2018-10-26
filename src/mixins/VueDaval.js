@@ -41,7 +41,9 @@ export default {
 		maxlen: 'Maximun length is {rule}',
 		length: 'Length must be {rule}',
 		equals: 'Must equal the field {rule}',
-		enum: 'Must be one of {rule}',
+		is: 'Must be {rule}',
+		isnot: 'Must not be {rule}',
+		isin: 'Must be one of {rule}',
 		undefined: 'Undefined error'
 	}
 

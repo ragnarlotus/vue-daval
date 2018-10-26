@@ -17,11 +17,12 @@ export default class Task {
 
 		this.path = path;
 		this.revalidate = revalidate;
-		this.validations = [].concat(this.path.$validations);
+		this.validations = this.path.$validations;
+		this.validated = 0;
 		this.valid = true;
 
 		if (this.path.$hasRules())
-			this.validations.push(this.path);
+			this.validations.set(this.path.$toString(), this.path);
 	}
 
 	updateTime() {
@@ -29,17 +30,14 @@ export default class Task {
 	}
 
 	run() {
-		let validations = [].concat(this.validations);
-
-		validations.forEach((validation) => {
+		for (let [path, validation] of this.validations.entries()) {
 			if (this.$vdConfig.skipNextValidationsOnError && this.valid === false) {
-				this.validations = validations = [];
-
-				return;
+				this.validated = this.validations.size;
+				break;
 			}
 
 			this.checkValidation(validation);
-		});
+		}
 
 		this.checkValidationsFinished();
 	}
@@ -48,8 +46,6 @@ export default class Task {
 		if (this.revalidate === false && validation.$validated === true) {
 			if (validation.$result.hasError())
 				this.valid = false;
-
-			this.removeValidation(validation);
 
 			return;
 		}
@@ -105,21 +101,15 @@ export default class Task {
 		if (valid !== true)
 			this.valid = false;
 
-		if (validation.$validated)
-			this.removeValidation(validation);
-	}
+		if (validation.$validated) {
+			this.validated++;
 
-	removeValidation(validation) {
-		let index = this.validations.indexOf(validation);
-
-		if (index !== -1)
-			this.validations.splice(index, 1);
-
-		this.checkValidationsFinished();
+			this.checkValidationsFinished();
+		}
 	}
 
 	checkValidationsFinished() {
-		if (this.validations.length > 0)
+		if (this.validations.size >= this.validated)
 			return;
 
 		this.valid? this.onSuccess() : this.onError();
