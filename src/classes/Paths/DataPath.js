@@ -55,14 +55,16 @@ export default class DataPath extends Path {
 	}
 
 	$updateChilds() {
-		let oldChilds = (new Map(this.$childs)).values();
-		let currentChilds = this.$data.values();
+		let oldChilds = Array.from(this.$childs.values());
+		let currentChilds = Array.from(this.$data.values());
 		let newChilds = new Map;
 		let oldIndex, newIndex;
 		let child;
 
-		for (let [item, newIndex] of currentChilds) {
-			oldIndex = oldChilds.indexOf(item);
+		currentChilds.forEach((item, newIndex) => {
+			oldIndex = oldChilds.findIndex((child) => {
+				return child.$data === item;
+			});
 
 			if (oldIndex !== -1) {
 				child = oldChilds.splice(oldIndex, 1)[0];
@@ -73,8 +75,10 @@ export default class DataPath extends Path {
 			}
 
 			this.$vd.$addPath(child);
-			newChilds.set(newIndex, child);
-		}
+			newChilds.set(child.$toString(), child);
+		});
+
+		console.log(newChilds);
 
 		for (let path of this.$childs.keys()) {
 			if (newChilds.has(path) === false)
@@ -101,10 +105,11 @@ export default class DataPath extends Path {
 				return;
 			}
 
+/*
 			console.log('path', this.$toString());
 			console.log('oldValue', oldValue);
 			console.log('newValue', newValue);
-
+*/
 			this.$validate(true);
 		});
 	}

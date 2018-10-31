@@ -6,22 +6,17 @@
 			<div class="col-sm-4">
 				<h5>Address book</h5>
 
-				<div v-for="(person, i) in persons" :key="i">
+				<div v-for="(name, i) in names" :key="i">
 					<div class="form-group">
 						<label>Name</label>
-						<input v-model="person.name" :class="$vd.persons[i]? getInputClass($vd.persons[i].name) : ''">
-						<div v-show="$vd.persons[i].name.$error" class="invalid-feedback">{{ $vd.persons[i].name.$error }}</div>
+						<input v-model="names[i]" :class="$vd.names[i]? getInputClass($vd.names[i]) : ''">
+						<button type="button" @click="removeName(i)">Remove</button>
+						<div v-show="$vd.names[i].$error" class="invalid-feedback">{{ $vd.names[i].$error }}</div>
 					</div>
 
-					<div class="form-group">
-						<label>Address</label>
-						<input v-model="person.address" :class="$vd.persons[i]? getInputClass($vd.persons[i].address) : ''">
-						<div v-show="$vd.persons[i].address.$error" class="invalid-feedback">{{ $vd.persons[i].address.$error }}</div>
-					</div>
-					<button type="button" @click="removePerson(i)">Remove</button>
 				</div>
 
-				<button type="button" @click="addPerson()">Add</button>
+				<button type="button" @click="addName()">Add</button>
 			</div>
 
 			<div class="col-sm-8">
@@ -39,13 +34,7 @@
 		mixins: [ VueDaval ],
 
 		data: () => ({
-			persons: [{
-				name: 'Name 1',
-				address: 'Address 1'
-			}, {
-				name: 'Name 2',
-				address: 'Address 2'
-			}]
+			names: ['Name 1', 'Name 2']
 		}),
 
 		props: [
@@ -53,22 +42,18 @@
 		],
 
 		vdRules: {
-			persons: {
-				name: { required: true, minlen: 5 },
-				address: { required: true }
-			}
+			names: { required: true, minlen: 5 }
 		},
 
 		methods: {
-			addPerson() {
-				this.persons.push({
-					name: undefined,
-					address: undefined
-				});
+			addName() {
+				this.names.push('');
 			},
 
-			removePerson(index) {
-				this.persons.splice(index, 1);
+			removeName(index) {
+				//delete this.names[index];
+				this.names.splice(index, 1);
+				//console.log(this);
 			}
 		}
 	}
