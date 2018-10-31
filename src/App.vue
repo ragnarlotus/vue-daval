@@ -17,3 +17,17 @@
 		}
 	}
 </script>
+
+<style lang="scss">
+	.form-control {
+		border-width: 10px;
+	}
+
+	.form-control.is-valid {
+		border-width: 10px;
+	}
+
+	.form-control.is-invalid {
+		border-width: 10px;
+	}
+</style>

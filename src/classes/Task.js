@@ -17,7 +17,7 @@ export default class Task {
 
 		this.path = path;
 		this.revalidate = revalidate;
-		this.validations = this.path.$validations;
+		this.validations = new Map(this.path.$validations);
 		this.validated = 0;
 		this.valid = true;
 
@@ -109,7 +109,7 @@ export default class Task {
 	}
 
 	checkValidationsFinished() {
-		if (this.validations.size >= this.validated)
+		if (this.validations.size > this.validated)
 			return;
 
 		this.valid? this.onSuccess() : this.onError();
