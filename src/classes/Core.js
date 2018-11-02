@@ -37,19 +37,19 @@ export default class Core {
 	}
 
 	$removePath(path, recursive = true) {
-		path = this.$getPath(path);
+		dataPath = this.$getPath(path);
 
-		if (path) {
-			if (recursive && path.$childs.length) {
-				path.$childs.forEach((child) => {
+		if (dataPath) {
+			if (recursive) {
+				dataPath.$childs.forEach((child) => {
 					this.$removePath(child.$path);
 				});
 			}
 
-			path.$removeWatcher();
+			dataPath.$removeWatcher();
 
 			this.$vm.$nextTick(() => {
-				this.$paths.delete(path.$toString());
+				this.$paths.delete(path);
 			});
 		}
 	}
