@@ -1,6 +1,5 @@
 import Core from '../classes/Core.js';
 import DataPath from '../classes/Paths/DataPath.js';
-import ComputedPath from '../classes/Paths/ComputedPath.js';
 import * as Validators from '../libraries/Validators.js';
 
 export default {
@@ -8,12 +7,15 @@ export default {
 	beforeMount() {
 		this.$vd = new Core(this);
 
-		let path;
+		let data = Object.assign({}, this.$data);
 
-		path = new DataPath(this, [], this._data, this.$options.vdRules);
+		Object.keys(this._computedWatchers).forEach((key) => {
+			data[key] = this[key];
+		});
+
+		let path = new DataPath(this, [], data, this.$options.vdRules);
+
 		this.$vd.$addPath(path);
-
-		new ComputedPath(this, [], this._computedWatchers, this.$options.vdRules);
 	},
 
 	beforeDestroyed() {
