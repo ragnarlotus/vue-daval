@@ -13,7 +13,6 @@
 						<button type="button" @click="removeName(i)">Remove</button>
 						<div v-show="$vd.names[i].$error" class="invalid-feedback">{{ $vd.names[i].$error }}</div>
 					</div>
-
 				</div>
 
 				<button type="button" @click="addName()">Add</button>
@@ -34,8 +33,17 @@
 		mixins: [ VueDaval ],
 
 		data: () => ({
-			names: ['Name 1', 'Name 2']
+			names: ['Name 1', 'Name 2'],
+			prueba: {
+				la: 'siono'
+			}
 		}),
+
+		computed: {
+			kk: function() {
+				return 'kk';
+			}
+		},
 
 		props: [
 			'getInputClass'
@@ -45,15 +53,22 @@
 			names: { required: true, minlen: 5 }
 		},
 
+		mounted() {
+			//console.log(this);
+			//console.log(Object.keys(this._data));
+			//console.log(this.$vd.$paths);
+		},
+
 		methods: {
 			addName() {
 				this.names.push('');
+				//console.log(this.$vd.$paths);
 			},
 
 			removeName(index) {
 				//delete this.names[index];
 				this.names.splice(index, 1);
-				//console.log(this);
+				//console.log(this.$vd.$paths);
 			}
 		}
 	}
