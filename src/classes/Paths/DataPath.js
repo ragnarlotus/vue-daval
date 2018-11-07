@@ -14,10 +14,10 @@ export default class DataPath {
 		this.$data = data;
 		this.$rules = rules;
 		this.$parent = parent;
-		this.$skipWatch = false;
 		this.$childs = {};
 		this.$validations = new Map;
 		this.$proxy = new Proxy(this, this);
+		this.$target = this;
 
 		this.$createWatcher();
 
@@ -67,6 +67,10 @@ export default class DataPath {
 		return new UndefinedPath(prop);
 	}
 
+	$getTarget() {
+		return this.$target;
+	}
+
 	$createChilds() {
 		let child;
 		let childPath;
@@ -98,15 +102,12 @@ export default class DataPath {
 	$updateChilds() {
 		let oldChilds = Object.values(this.$childs);
 		let newChilds = {};
-		let itemRemoved = this.$data.length < oldChilds.length;
 		let oldIndex;
 		let child;
 
-		if (itemRemoved) {
-			oldChilds.forEach((child) => {
-				child.$deleteWatcher(true);
-			});
-		}
+		oldChilds.forEach((child) => {
+			child.$deleteWatcher(true);
+		});
 
 		this.$data.forEach((item, newIndex) => {
 			oldIndex = oldChilds.findIndex((child) => {
@@ -116,9 +117,7 @@ export default class DataPath {
 			if (oldIndex !== -1) {
 				child = oldChilds.splice(oldIndex, 1)[0];
 				child.$path.splice(-1, 1, newIndex);
-
-				if (itemRemoved)
-					child.$createWatcher(true);
+				child.$createWatcher(true);
 
 			} else {
 				child = new DataPath(this.$vm, this.$path.concat(newIndex), item, this.$rules, this);
@@ -126,18 +125,8 @@ export default class DataPath {
 
 			newChilds[newIndex] = child;
 		});
-/*
-		for (let index of Array.keys(this.$childs)) {
-			if (index in newChilds === false) {
-				//console.log('deleting a', index);
-				this.$childs[index].$delete();
-			}
-		}
-*/
-		this.$childs = newChilds;
 
-		//console.log(this.$childs);
-		console.log(this.$vm._watchers);
+		this.$childs = newChilds;
 	}
 
 	$createWatcher(recursive = false) {
@@ -154,13 +143,21 @@ export default class DataPath {
 		}
 
 		this.$watcher = this.$vm.$watch(this.$toString(), (newValue, oldValue) => {
-			if (this.$skipWatch) {
-				this.$skipWatch = false;
-				return;
-			}
-
 			if (Utils.isArray(this.$data)) {
-				if (this.$data.length !== Object.keys(this.$childs).length)
+				let updated = Object.keys(this.$childs).length !== this.$data.length;
+
+				if (updated === false) {
+					updated = this.$data.some((item, index) => {
+						let target = this.$childs[index].$getTarget();
+
+						if (Utils.isObject(target.$data) || Utils.isArray(target.$data))
+							return target.$data !== item;
+
+						return item !== oldValue[index];
+					});
+				}
+
+				if (updated)
 					this.$updateChilds();
 
 				return;
@@ -168,20 +165,8 @@ export default class DataPath {
 
 			this.$data = newValue;
 
-			console.log(this.$toString(), '->', this.$data);
-
 			this.$validate(true);
 		});
-	}
-
-	$skipWatcher(recursive = true) {
-		if (recursive) {
-			Object.values(this.$childs).forEach((child) => {
-				child.$skipWatcher();
-			});
-		}
-
-		this.$skipWatch = true;
 	}
 
 	$deleteWatcher(recursive = false) {
