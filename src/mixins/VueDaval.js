@@ -9,24 +9,22 @@ export default {
 
 		let data = Object.assign({}, this.$data);
 
-		Object.keys(this._computedWatchers).forEach((key) => {
-			data[key] = this[key];
-		});
+		if (this._computedWatchers) {
+			Object.keys(this._computedWatchers).forEach((key) => {
+				data[key] = this[key];
+			});
+		}
 
-		let path = new DataPath(this, [], data, this.$options.vdRules);
-
-		this.$vd.$addPath(path);
+		this.$vd.$paths[''] = new DataPath(this, [], data, this.$options.vdRules);
 	},
 
-	beforeDestroyed() {
-		this.$vd.$paths.forEach((undefined, path) => {
-			this.$vd.$removePath(path);
-		});
+	beforeDestroy() {
+		this.$vd.$paths[''].$delete();
 	},
 
 	vdConfig: {
-		skipNextValidationsOnError: false,
-		skipNextRulesOnError: false
+		skipValidationsOnError: false,
+		skipRulesOnError: false
 	},
 
 	vdRules: {},

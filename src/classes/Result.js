@@ -29,7 +29,7 @@ export default class Result {
 		if (valid !== true && this.error === undefined)
 			this.error = error;
 
-		if (this.numRules === this.rules.size || (this.error && this.$vdConfig.skipNextRulesOnError))
+		if (this.numRules === this.rules.size || (this.error && this.$vdConfig.skipRulesOnError))
 			this.validated = true;
 	}
 

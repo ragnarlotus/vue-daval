@@ -7,8 +7,6 @@ export default class Task {
 	constructor(vm, path, revalidate) {
 		this.$vm = vm;
 		this.$vd = vm.$vd;
-		this.$vdConfig = vm.$options.vdConfig;
-		this.$vdValidators = vm.$options.vdValidators;
 
 		this.promise = new Promise((resolve, reject) => {
 			this.onSuccess = resolve;
@@ -30,8 +28,10 @@ export default class Task {
 	}
 
 	run() {
+		let finishOnError = this.$vd.$getConfig('skipValidationsOnError');
+
 		for (let [path, validation] of this.validations.entries()) {
-			if (this.$vdConfig.skipNextValidationsOnError && this.valid === false) {
+			if (finishOnError && this.valid === false) {
 				this.validated = this.validations.size;
 				break;
 			}
@@ -50,7 +50,7 @@ export default class Task {
 			return;
 		}
 
-		validation.$result.reset();
+		validation.$reset();
 
 		validation.$getRules().forEach((rule) => {
 			if (validation.$validated)
@@ -63,7 +63,7 @@ export default class Task {
 	checkValidationRule(validation, ruleName) {
 		let valid = false;
 		let ruleValue = validation.$rules[ruleName];
-		let validator = this.$vdValidators[ruleName];
+		let validator = this.$vd.$getValidator(ruleName);
 		let data = validation.$data;
 
 		if (validator !== undefined) {
