@@ -98,45 +98,60 @@ export default class DataPath {
 	$updateChilds() {
 		let oldChilds = Object.values(this.$childs);
 		let newChilds = {};
-		let skipWatcher = this.$data.length < oldChilds.length;
-		let newIndex;
+		let itemRemoved = this.$data.length < oldChilds.length;
+		let oldIndex;
 		let child;
 
-		this.$data.forEach((item, index) => {
-			newIndex = oldChilds.findIndex((child) => {
+		if (itemRemoved) {
+			oldChilds.forEach((child) => {
+				child.$deleteWatcher(true);
+			});
+		}
+
+		this.$data.forEach((item, newIndex) => {
+			oldIndex = oldChilds.findIndex((child) => {
 				return child.$data === item;
 			});
 
-			if (newIndex !== -1) {
-				child = oldChilds.splice(newIndex, 1)[0];
-				child.$path.splice(-1, 1, index);
+			if (oldIndex !== -1) {
+				child = oldChilds.splice(oldIndex, 1)[0];
+				child.$path.splice(-1, 1, newIndex);
 
-				if (skipWatcher)
-					child.$skipWatcher();
+				if (itemRemoved)
+					child.$createWatcher(true);
 
 			} else {
-				child = new DataPath(this.$vm, this.$path.concat(index), item, this.$rules, this);
+				child = new DataPath(this.$vm, this.$path.concat(newIndex), item, this.$rules, this);
 			}
 
-			newChilds[index] = child;
+			newChilds[newIndex] = child;
 		});
-
-		for (let path of Object.keys(this.$childs)) {
-			if (path in newChilds === false) {
-				console.log('deleting a', path);
-				this.$childs[path].$delete();
+/*
+		for (let index of Array.keys(this.$childs)) {
+			if (index in newChilds === false) {
+				//console.log('deleting a', index);
+				this.$childs[index].$delete();
 			}
 		}
-
+*/
 		this.$childs = newChilds;
+
+		//console.log(this.$childs);
+		console.log(this.$vm._watchers);
 	}
 
-	$createWatcher() {
+	$createWatcher(recursive = false) {
 		if (this.$watcher)
 			this.$watcher();
 
 		if (this.$path.length === 0)
 			return;
+
+		if (recursive) {
+			Object.values(this.$childs).forEach((child) => {
+				child.$createWatcher();
+			});
+		}
 
 		this.$watcher = this.$vm.$watch(this.$toString(), (newValue, oldValue) => {
 			if (this.$skipWatch) {
@@ -153,8 +168,7 @@ export default class DataPath {
 
 			this.$data = newValue;
 
-			console.log('path', this.$toString());
-			console.log('data', this.$data);
+			console.log(this.$toString(), '->', this.$data);
 
 			this.$validate(true);
 		});
@@ -170,11 +184,17 @@ export default class DataPath {
 		this.$skipWatch = true;
 	}
 
-	$deleteWatcher() {
-		if (this.$watcher)
-			this.$watcher();
+	$deleteWatcher(recursive = false) {
+		if (recursive) {
+			Object.values(this.$childs).forEach((child) => {
+				child.$deleteWatcher(true);
+			});
+		}
 
-		this.$watcher = undefined;
+		if ('$watcher' in this && Utils.isFunction(this.$watcher)) {
+			this.$watcher();
+			this.$watcher = undefined;
+		}
 	}
 
 	$addValidation(child) {

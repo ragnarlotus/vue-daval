@@ -54,7 +54,7 @@
 		},
 
 		mounted() {
-			console.log(this);
+			//console.log(this);
 			//console.log(Object.keys(this._data));
 			//console.log(this.$vd.$paths);
 		},
