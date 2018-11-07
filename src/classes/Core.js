@@ -9,49 +9,25 @@ export default class Core {
 	constructor(vm) {
 		this.$vm = vm;
 
-		this.$paths = new Map;
+		this.$paths = {};
 		this.$tasks = new Map;
 
 		return new Proxy(this, this);
 	}
 
 	get(obj, prop) {
-		return this[prop] || this.$getPath(prop) || new UndefinedPath(prop);
+		if (prop in obj)
+			return this[prop];
+
+		return this.$paths[''][prop];
 	}
 
-	$addPath(path) {
-		this.$paths.set(path.$toString(), path);
+	$getConfig(config) {
+		return this.$vm.$options.vdConfig[config];
 	}
 
-	$getPath(path) {
-		if (Utils.isArray(path))
-			path = path.join('.');
-
-		if (['$errors', '$reset', '$validate'].includes(path))
-			return this.$paths.get('')[path];
-
-		if (this.$paths.has(path))
-			return this.$paths.get(path);
-
-		return undefined;
-	}
-
-	$removePath(path, recursive = true) {
-		dataPath = this.$getPath(path);
-
-		if (dataPath) {
-			if (recursive) {
-				dataPath.$childs.forEach((child) => {
-					this.$removePath(child.$path);
-				});
-			}
-
-			dataPath.$removeWatcher();
-
-			this.$vm.$nextTick(() => {
-				this.$paths.delete(path);
-			});
-		}
+	$getValidator(validator) {
+		return this.$vm.$options.vdValidators[validator];
 	}
 
 	$addTask(path, revalidate) {

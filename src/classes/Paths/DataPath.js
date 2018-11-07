@@ -1,6 +1,7 @@
 // Path class
 
 import * as Utils from '../../libraries/Utils.js';
+import UndefinedPath from './UndefinedPath.js';
 import Result from '../Result.js';
 
 export default class DataPath {
@@ -14,7 +15,7 @@ export default class DataPath {
 		this.$rules = rules;
 		this.$parent = parent;
 		this.$skipWatch = false;
-		this.$childs = new Map;
+		this.$childs = {};
 		this.$validations = new Map;
 		this.$proxy = new Proxy(this, this);
 
@@ -60,14 +61,13 @@ export default class DataPath {
 			return errors;
 		}
 
-		let childPath = this.$path.concat(prop);
+		if (prop in this.$childs)
+			return this.$childs[prop];
 
-		return this.$vd.$getPath(childPath);
+		return new UndefinedPath(prop);
 	}
 
 	$createChilds() {
-		this.$childs = new Map;
-
 		let child;
 		let childPath;
 
@@ -78,8 +78,7 @@ export default class DataPath {
 				if (key in this.$data) {
 					child = new DataPath(this.$vm, childPath, this.$data[key], this.$rules[key], this);
 
-					this.$childs.set(child.$toString(), child);
-					this.$vd.$addPath(child);
+					this.$childs[key] = child;
 				}
 			});
 
@@ -89,8 +88,7 @@ export default class DataPath {
 
 				child = new DataPath(this.$vm, childPath, item, this.$rules, this);
 
-				this.$childs.set(child.$toString(), child);
-				this.$vd.$addPath(child);
+				this.$childs[index] = child;
 			});
 		}
 
@@ -98,8 +96,8 @@ export default class DataPath {
 	}
 
 	$updateChilds() {
-		let oldChilds = Array.from(this.$childs.values());
-		let newChilds = new Map;
+		let oldChilds = Object.values(this.$childs);
+		let newChilds = {};
 		let skipWatcher = this.$data.length < oldChilds.length;
 		let newIndex;
 		let child;
@@ -120,14 +118,13 @@ export default class DataPath {
 				child = new DataPath(this.$vm, this.$path.concat(index), item, this.$rules, this);
 			}
 
-			this.$vd.$addPath(child);
-			newChilds.set(child.$toString(), child);
+			newChilds[index] = child;
 		});
 
-		for (let path of this.$childs.keys()) {
-			if (newChilds.has(path) === false) {
+		for (let path of Object.keys(this.$childs)) {
+			if (path in newChilds === false) {
 				console.log('deleting a', path);
-				this.$vd.$removePath(path);
+				this.$childs[path].$delete();
 			}
 		}
 
@@ -148,7 +145,7 @@ export default class DataPath {
 			}
 
 			if (Utils.isArray(this.$data)) {
-				if (this.$data.length !== this.$childs.size)
+				if (this.$data.length !== Object.keys(this.$childs).length)
 					this.$updateChilds();
 
 				return;
@@ -165,7 +162,7 @@ export default class DataPath {
 
 	$skipWatcher(recursive = true) {
 		if (recursive) {
-			this.$childs.forEach((child) => {
+			Object.values(this.$childs).forEach((child) => {
 				child.$skipWatcher();
 			});
 		}
@@ -173,7 +170,7 @@ export default class DataPath {
 		this.$skipWatch = true;
 	}
 
-	$removeWatcher() {
+	$deleteWatcher() {
 		if (this.$watcher)
 			this.$watcher();
 
@@ -201,7 +198,7 @@ export default class DataPath {
 
 	$reset() {
 		this.$validations.forEach((validation) => {
-			child.$reset();
+			validation.$result.reset();
 		});
 
 		if (this.$result !== undefined)
@@ -242,6 +239,20 @@ export default class DataPath {
 
 	$toString() {
 		return this.$path.join('.');
+	}
+
+	$delete(recursive = true) {
+		Object.values(this.$childs).forEach((child) => {
+			child.$delete();
+		});
+
+		this.$deleteWatcher();
+
+		if (this.$parent) {
+			let key = this.$path.pop();
+
+			delete this.$parent[key];
+		}
 	}
 
 }

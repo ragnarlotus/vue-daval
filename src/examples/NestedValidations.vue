@@ -9,7 +9,7 @@
 				<div v-for="(name, i) in names" :key="i">
 					<div class="form-group">
 						<label>Name</label>
-						<input v-model="names[i]" :class="$vd.names[i]? getInputClass($vd.names[i]) : ''">
+						<input v-model="names[i]" :class="getInputClass($vd.names[i])">
 						<button type="button" @click="removeName(i)">Remove</button>
 						<div v-show="$vd.names[i].$error" class="invalid-feedback">{{ $vd.names[i].$error }}</div>
 					</div>
@@ -54,7 +54,7 @@
 		},
 
 		mounted() {
-			//console.log(this);
+			console.log(this);
 			//console.log(Object.keys(this._data));
 			//console.log(this.$vd.$paths);
 		},
