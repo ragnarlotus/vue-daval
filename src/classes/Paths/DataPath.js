@@ -189,6 +189,13 @@ export default class DataPath {
 			this.$parent.$addValidation(child);
 	}
 
+	$deleteValidation(child) {
+		this.$validations.delete(child.$toString());
+
+		if (this.$parent !== undefined)
+			this.$parent.$deleteValidation(child);
+	}
+
 	$hasRules() {
 		return '$result' in this;
 	}
@@ -254,6 +261,9 @@ export default class DataPath {
 		this.$deleteWatcher();
 
 		if (this.$parent) {
+			if (this.$hasRules())
+				this.$parent.$deleteValidation(this.$proxy);
+
 			let key = this.$path.pop();
 
 			delete this.$parent[key];
