@@ -19,15 +19,17 @@
 </script>
 
 <style lang="scss">
+	$border-width: 4px;
+
 	.form-control {
-		border-width: 10px;
+		border-width: $border-width;
 	}
 
 	.form-control.is-valid {
-		border-width: 10px;
+		border-width: $border-width;
 	}
 
 	.form-control.is-invalid {
-		border-width: 10px;
+		border-width: $border-width;
 	}
 </style>

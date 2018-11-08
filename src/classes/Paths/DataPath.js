@@ -6,11 +6,11 @@ import Result from '../Result.js';
 
 export default class DataPath {
 
-	constructor(vm, path, data, rules, parent) {
+	constructor(vm, key, data, rules, parent) {
 		this.$vm = vm;
 		this.$vd = vm.$vd;
 
-		this.$path = path;
+		this.$key = key;
 		this.$data = data;
 		this.$rules = rules;
 		this.$parent = parent;
@@ -22,7 +22,7 @@ export default class DataPath {
 		this.$createWatcher();
 
 		if (this.$createChilds() === false) {
-			this.$result = new Result(vm, this);
+			this.$result = new Result(this);
 
 			this.$parent.$addValidation(this.$proxy);
 		}
@@ -77,10 +77,8 @@ export default class DataPath {
 
 		if (Utils.isObject(this.$data)) {
 			Object.keys(this.$rules).forEach((key) => {
-				childPath = this.$path.concat(key);
-
 				if (key in this.$data) {
-					child = new DataPath(this.$vm, childPath, this.$data[key], this.$rules[key], this);
+					child = new DataPath(this.$vm, key, this.$data[key], this.$rules[key], this);
 
 					this.$childs[key] = child;
 				}
@@ -88,9 +86,7 @@ export default class DataPath {
 
 		} else if (Utils.isArray(this.$data)) {
 			this.$data.forEach((item, index) => {
-				childPath = this.$path.concat(index);
-
-				child = new DataPath(this.$vm, childPath, item, this.$rules, this);
+				child = new DataPath(this.$vm, index, item, this.$rules, this);
 
 				this.$childs[index] = child;
 			});
@@ -116,11 +112,11 @@ export default class DataPath {
 
 			if (oldIndex !== -1) {
 				child = oldChilds.splice(oldIndex, 1)[0];
-				child.$path.splice(-1, 1, newIndex);
+				child.$key = newIndex;
 				child.$createWatcher(true);
 
 			} else {
-				child = new DataPath(this.$vm, this.$path.concat(newIndex), item, this.$rules, this);
+				child = new DataPath(this.$vm, newIndex, item, this.$rules, this);
 			}
 
 			newChilds[newIndex] = child;
@@ -133,7 +129,7 @@ export default class DataPath {
 		if (this.$watcher)
 			this.$watcher();
 
-		if (this.$path.length === 0)
+		if (this.$key === '')
 			return;
 
 		if (recursive) {
@@ -250,7 +246,12 @@ export default class DataPath {
 	}
 
 	$toString() {
-		return this.$path.join('.');
+		let path = '';
+
+		if (this.$parent && this.$parent.$key !== '')
+			path += this.$parent.$toString() +'.';
+
+		return path + this.$key;
 	}
 
 	$delete(recursive = true) {
@@ -264,9 +265,7 @@ export default class DataPath {
 			if (this.$hasRules())
 				this.$parent.$deleteValidation(this.$proxy);
 
-			let key = this.$path.pop();
-
-			delete this.$parent[key];
+			delete this.$parent.$childs[this.$key];
 		}
 	}
 

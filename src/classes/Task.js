@@ -4,7 +4,7 @@ import * as Utils from '../libraries/Utils.js';
 
 export default class Task {
 
-	constructor(vm, path, revalidate) {
+	constructor(vm, dataPath, revalidate) {
 		this.$vm = vm;
 		this.$vd = vm.$vd;
 
@@ -13,14 +13,14 @@ export default class Task {
 			this.onError = reject;
 		});
 
-		this.path = path;
+		this.dataPath = dataPath;
 		this.revalidate = revalidate;
-		this.validations = new Map(this.path.$validations);
+		this.validations = new Map(this.dataPath.$validations);
 		this.validated = 0;
 		this.valid = true;
 
-		if (this.path.$hasRules())
-			this.validations.set(this.path.$toString(), this.path);
+		if (this.dataPath.$hasRules())
+			this.validations.set(this.dataPath.$toString(), this.dataPath);
 	}
 
 	updateTime() {
@@ -44,7 +44,7 @@ export default class Task {
 
 	checkValidation(validation) {
 		if (this.revalidate === false && validation.$validated === true) {
-			if (validation.$result.hasError())
+			if (validation.$error)
 				this.valid = false;
 
 			return;
@@ -98,7 +98,7 @@ export default class Task {
 	addValidationRuleResult(validation, rule, valid) {
 		validation.$result.add(rule, valid);
 
-		if (valid !== true)
+		if (!valid)
 			this.valid = false;
 
 		if (validation.$validated) {

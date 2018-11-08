@@ -15,7 +15,7 @@ export default {
 			});
 		}
 
-		this.$vd.$paths[''] = new DataPath(this, [], data, this.$options.vdRules);
+		this.$vd.$paths[''] = new DataPath(this, '', data, this.$options.vdRules);
 	},
 
 	beforeDestroy() {
