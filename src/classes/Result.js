@@ -4,11 +4,9 @@ import * as Utils from '../libraries/Utils.js';
 
 export default class Result {
 
-	constructor(vm, path) {
-		this.$vdConfig = vm.$options.vdConfig;
-		this.$vdMessages = vm.$options.vdMessages;
-
-		this.path = path;
+	constructor(dataPath) {
+		this.vd = dataPath.$vd;
+		this.dataPath = dataPath;
 
 		this.reset();
 	}
@@ -21,35 +19,33 @@ export default class Result {
 			valid = false;
 		}
 
-		if (valid !== true)
+		if (!valid)
 			error = this.getMessage(rule, error);
 
-		this.rules.set(rule, error);
+		this.rules[rule] = error;
 
-		if (valid !== true && this.error === undefined)
+		if (!valid && !this.error)
 			this.error = error;
 
-		if (this.numRules === this.rules.size || (this.error && this.$vdConfig.skipRulesOnError))
+		if (Object.keys(this.rules).length === this.numRules || (this.error && this.vd.$getConfig('skipRulesOnError')))
 			this.validated = true;
 	}
 
 	getMessage(rule, message) {
-		let path = this.path;
+		if (!message)
+			message = this.dataPath.$rules['message'];
 
 		if (!message)
-			message = path.$rules['message'];
+			message = this.vd.$getMessage(rule);
 
 		if (!message)
-			message = this.$vdMessages[rule];
+			return this.vd.$getMessage('undefined');
 
-		if (!message)
-			return this.$vdMessages['undefined'];
-
-		let field = path.$rules['field'] || path.$path.slice(-1)[0];
+		let field = this.dataPath.$rules['field'] || this.dataPath.$key;
 
 		message = message.replace('{field}', field);
 
-		rule = path.$rules[rule].toString();
+		rule = this.dataPath.$rules[rule].toString();
 
 		rule = rule.split('.').slice(-1)[0];
 
@@ -62,26 +58,15 @@ export default class Result {
 		return this.error !== undefined;
 	}
 
-	getError(rule) {
-		this.rules.get(rule);
-	}
-
 	getErrors() {
-		let errors = {};
-
-		this.rules.forEach((error, rule) => {
-			if (error)
-				errors[rule] = error;
-		});
-
-		return errors;
+		return Object.values(this.rules).filter((error) => error);
 	}
 
 	reset() {
-		this.rules = new Map;
-		this.numRules = this.path.$getRules().length;
-		this.validated = false;
 		this.error = undefined;
+		this.rules = {};
+		this.numRules = this.dataPath.$getRules().length;
+		this.validated = false;
 	}
 
 };

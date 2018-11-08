@@ -30,26 +30,30 @@ export default class Core {
 		return this.$vm.$options.vdValidators[validator];
 	}
 
-	$addTask(path, revalidate) {
-		let task = this.$tasks.get(path.$toString());
+	$getMessage(rule) {
+		return this.$vm.$options.vdMessages[rule];
+	}
+
+	$addTask(dataPath, revalidate) {
+		let path = dataPath.$toString();
+
+		let task = this.$tasks.get(path);
 
 		if (task === undefined) {
-			task = new Task(this.$vm, path, revalidate);
+			task = new Task(this.$vm, dataPath, revalidate);
 
-			this.$tasks.set(path.$toString(), task);
+			this.$tasks.set(path, task);
 		}
 
-		this.$runTask(task);
+		task.run();
 
 		return task;
 	}
 
-	$runTask(task) {
-		task.run();
-	}
-
 	$removeTask(task) {
-		this.$tasks.delete(task.path.$toString());
+		let path = task.dataPath.$toString();
+
+		this.$tasks.delete(path);
 	}
 
 };
