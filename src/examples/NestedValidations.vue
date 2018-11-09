@@ -1,6 +1,6 @@
 <template>
-	<div>
-		<h4>Groups</h4>
+	<div class="mt-4">
+		<h4>Nested validations</h4>
 
 		<div class="row">
 			<div class="col-sm-4">
@@ -25,6 +25,31 @@
 			</div>
 
 			<div class="col-sm-8">
+				<b-tabs>
+					<b-tab title="Component" active>
+						<highlight-code lang="javascript">data: () => ({
+   persons: [{
+      name: 'Name 1',
+      address: 'Address 1'
+   }, {
+      name: 'Name 2',
+      address: 'Address 2'
+   }]
+}),
+
+vdRules: {
+   persons: {
+      name: { required: true, minlen: 5 },
+      address: { required: true }
+   }
+}
+</highlight-code>
+					</b-tab>
+
+					<b-tab title="Result">
+<highlight-code lang="javascript">$vd.persons.$errors = {{ $vd.persons.$errors }};</highlight-code>
+					</b-tab>
+				</b-tabs>
 			</div>
 		</div>
 	</div>

@@ -28,10 +28,10 @@ export default class Task {
 	}
 
 	run() {
-		let finishOnError = this.$vd.$getConfig('skipValidationsOnError');
+		let skipValidationsOnError = this.$vd.$getConfig('skipValidationsOnError');
 
 		for (let [path, validation] of this.validations.entries()) {
-			if (finishOnError && this.valid === false) {
+			if (skipValidationsOnError && this.valid === false) {
 				this.validated = this.validations.size;
 				break;
 			}
