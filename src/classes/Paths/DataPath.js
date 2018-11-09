@@ -235,13 +235,13 @@ export default class DataPath {
 
 		links = Utils.isArray(links)? links : [links];
 
-		let path;
+		let dataPath;
 
 		links.forEach((link) => {
-			path = this.$vd.$getPath(link);
+			dataPath = Utils.pathToValue(link, this.$vd);
 
-			if (path !== undefined)
-				path.$validate(true);
+			if (dataPath !== undefined)
+				dataPath.$validate(true);
 		});
 	}
 

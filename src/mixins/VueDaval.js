@@ -34,7 +34,7 @@ export default {
 	vdMessages: {
 		type: 'This is not a valid {rule}',
 		required: 'This field is required',
-		regexp: 'This is no a valid value',
+		regexp: 'This is not a valid value',
 		min: 'Minimun value is {rule}',
 		max: 'Maximun value is {rule}',
 		minlen: 'Minimun length is {rule}',

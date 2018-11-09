@@ -1,3 +1,7 @@
+// Validators library
+
+import * as Utils from '../../libraries/Utils.js';
+
 const types = {
 	boolean(value) {
 		return typeof value === 'boolean';
@@ -34,9 +38,6 @@ const types = {
 
 
 export function type(rule, value) {
-	if (value === undefined || value === null)
-		return true;
-
 	if (types[rule](value) === false)
 		return false;
 
@@ -47,9 +48,6 @@ export function type(rule, value) {
 export function required(rule, value) {
 	if (rule === false)
 		return true;
-
-	if (value === null)
-		return false;
 
 	let type = typeof value;
 
@@ -67,9 +65,6 @@ export function required(rule, value) {
 
 
 export function regexp(rule, value) {
-	if (value === undefined || value === null)
-		return true;
-
 	if ((new RegExp(rule)).test(value) === false)
 		return false;
 
@@ -78,9 +73,6 @@ export function regexp(rule, value) {
 
 
 export function min(rule, value) {
-	if (value === undefined || value === null)
-		return true;
-
 	if (typeof value !== 'number')
 		return false;
 
@@ -92,9 +84,6 @@ export function min(rule, value) {
 
 
 export function max(rule, value) {
-	if (value === undefined || value === null)
-		return true;
-
 	if (typeof value !== 'number')
 		return false;
 
@@ -106,9 +95,6 @@ export function max(rule, value) {
 
 
 export function minlen(rule, value) {
-	if (value === undefined || value === null)
-		return true;
-
 	if (/(string|array)/.test(typeof value) === false)
 		return false;
 
@@ -120,9 +106,6 @@ export function minlen(rule, value) {
 
 
 export function maxlen(rule, value) {
-	if (value === undefined || value === null)
-		return true;
-
 	if (/(string|array)/.test(typeof value) === false)
 		return false;
 
@@ -134,9 +117,6 @@ export function maxlen(rule, value) {
 
 
 export function length(rule, value) {
-	if (value === undefined || value === null)
-		return true;
-
 	let type = typeof value;
 
 	if (/(string|array|number)/.test(type) === false)
@@ -153,13 +133,7 @@ export function length(rule, value) {
 
 
 export function equals(rule, value) {
-	if (value === undefined || value === null)
-		return true;
-
-	let value2 = this.$vd.$getPath(rule).$data;
-
-	if (typeof value2 === 'undefined' && typeof value !== 'undefined')
-		return false;
+	let value2 = Utils.pathToValue(rule, this.$vd).$data;
 
 	if (value2.toString() !== value.toString())
 		return false;
@@ -169,9 +143,6 @@ export function equals(rule, value) {
 
 
 export function is(rule, value) {
-	if (value === undefined || value === null)
-		return true;
-
 	if (rule != value)
 		return false;
 
@@ -180,9 +151,6 @@ export function is(rule, value) {
 
 
 export function isnot(rule, value) {
-	if (value === undefined || value === null)
-		return true;
-
 	if (rule == value)
 		return false;
 
@@ -191,9 +159,6 @@ export function isnot(rule, value) {
 
 
 export function isin(rule, value) {
-	if (value === undefined || value === null)
-		return true;
-
 	if (rule.indexOf(value) === -1)
 		return false;
 
