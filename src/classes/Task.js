@@ -15,12 +15,21 @@ export default class Task {
 
 		this.dataPath = dataPath;
 		this.revalidate = revalidate;
-		this.validations = new Map(this.dataPath.$validations);
+		this.validations = new Map();
 		this.validated = 0;
+		this.finished = false;
 		this.valid = true;
 
-		if (this.dataPath.$hasRules())
-			this.validations.set(this.dataPath.$toString(), this.dataPath);
+		this.addValidation(this.dataPath);
+	}
+
+	addValidation(dataPath) {
+		if (dataPath.$hasRules())
+			this.validations.set(dataPath.$toString(), dataPath);
+
+		Object.values(dataPath.$childs).forEach((child) => {
+			this.addValidation(child);
+		});
 	}
 
 	updateTime() {
@@ -44,13 +53,15 @@ export default class Task {
 
 	checkValidation(validation) {
 		if (this.revalidate === false && validation.$validated === true) {
+			this.validated++;
+
 			if (validation.$error)
 				this.valid = false;
 
 			return;
 		}
 
-		validation.$reset();
+		validation.$reset(false);
 
 		validation.$getRules().forEach((rule) => {
 			if (validation.$validated)
@@ -109,8 +120,10 @@ export default class Task {
 	}
 
 	checkValidationsFinished() {
-		if (this.validations.size > this.validated)
+		if (this.validations.size > this.validated || this.finished)
 			return;
+
+		this.finished = true;
 
 		this.valid? this.onSuccess() : this.onError();
 

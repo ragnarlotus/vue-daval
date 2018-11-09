@@ -1,7 +1,5 @@
 <template>
 	<div>
-		<h1>Examples</h1>
-
 		<component v-for="example in examples" :key="example" :is="example" class="example" :get-input-class="getInputClass"></component>
 	</div>
 </template>
@@ -81,9 +79,4 @@
 </script>
 
 <style lang="scss">
-	.example h4 {
-		padding: 4px 0 6px 12px;
-		color: #eee;
-		background-color: #333;
-	}
 </style>

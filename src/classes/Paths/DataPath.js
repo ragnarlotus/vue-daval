@@ -15,17 +15,13 @@ export default class DataPath {
 		this.$rules = rules;
 		this.$parent = parent;
 		this.$childs = {};
-		this.$validations = new Map;
 		this.$proxy = new Proxy(this, this);
 		this.$target = this;
 
 		this.$createWatcher();
 
-		if (this.$createChilds() === false) {
+		if (this.$createChilds() === false)
 			this.$result = new Result(this);
-
-			this.$parent.$addValidation(this.$proxy);
-		}
 
 		return this.$proxy;
 	}
@@ -49,13 +45,13 @@ export default class DataPath {
 
 		} else if (prop === '$errors') {
 			let errors = {};
-			let validationErrors;
+			let childErrors;
 
-			this.$validations.forEach((validation) => {
-				validationErrors = validation.$errors;
+			Object.values(this.$childs).forEach((child) => {
+				childErrors = child.$errors;
 
-				if (Object.keys(validationErrors).length > 0)
-					errors[validation.$toString()] = validationErrors;
+				if (Object.keys(childErrors).length > 0)
+					errors[child.$key] = childErrors;
 			});
 
 			return errors;
@@ -178,20 +174,6 @@ export default class DataPath {
 		}
 	}
 
-	$addValidation(child) {
-		this.$validations.set(child.$toString(), child);
-
-		if (this.$parent !== undefined)
-			this.$parent.$addValidation(child);
-	}
-
-	$deleteValidation(child) {
-		this.$validations.delete(child.$toString());
-
-		if (this.$parent !== undefined)
-			this.$parent.$deleteValidation(child);
-	}
-
 	$hasRules() {
 		return '$result' in this;
 	}
@@ -204,10 +186,12 @@ export default class DataPath {
 		return rules.filter(rule => reserved.includes(rule) === false);
 	}
 
-	$reset() {
-		this.$validations.forEach((validation) => {
-			validation.$result.reset();
-		});
+	$reset(recursive = true) {
+		if (recursive) {
+			Object.values(this.$childs).forEach((child) => {
+				child.$reset();
+			});
+		}
 
 		if (this.$result !== undefined)
 			this.$result.reset();
@@ -261,12 +245,8 @@ export default class DataPath {
 
 		this.$deleteWatcher();
 
-		if (this.$parent) {
-			if (this.$hasRules())
-				this.$parent.$deleteValidation(this.$proxy);
-
+		if (this.$parent)
 			delete this.$parent.$childs[this.$key];
-		}
 	}
 
 }

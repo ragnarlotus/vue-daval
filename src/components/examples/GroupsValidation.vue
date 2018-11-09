@@ -1,7 +1,5 @@
 <template>
-	<div class="mt-4">
-		<h4>Groups</h4>
-
+	<b-card-example title="Groups">
 		<div class="row">
 			<div class="col-sm-4">
 				<h5>Login</h5>
@@ -23,12 +21,6 @@
 				<h5 class="mt-3">Register</h5>
 
 				<div class="form-group">
-					<label>Name</label>
-					<input v-model="register.name" :class="getInputClass($vd.register.name)">
-					<div v-show="$vd.register.name.$error" class="invalid-feedback">{{ $vd.register.name.$error }}</div>
-				</div>
-
-				<div class="form-group">
 					<label>Email</label>
 					<input v-model="register.email" :class="getInputClass($vd.register.email)">
 					<div v-show="$vd.register.email.$error" class="invalid-feedback">{{ $vd.register.email.$error }}</div>
@@ -44,53 +36,40 @@
 			</div>
 
 			<div class="col-sm-8">
-				<b-tabs>
-					<b-tab title="Component" active>
-						<highlight-code lang="javascript">data: () => ({
-   login: {
-      email: undefined,
-      password: undefined
-   },
+				<b-card-code title="Rules">
+login: {
+   email: { required: true, type: 'email' },
+   password: { required: true, minlen: 5 }
+},
 
-   register: {
-      name: undefined,
-      email: undefined,
-      password: undefined
-   }
-}),
-
-vdRules: {
-   login: {
-      email: { required: true, type: 'email' },
-      password: { required: true, minlen: 5 }
-   },
-
-   register: {
-      name: { required: true, minlen: 3, regexp: /^[a-z0-9 ]+$/ig },
-      email: { required: true, type: 'email' },
-      password: { required: true, minlen: 5 }
-   }
+register: {
+   email: { required: true, type: 'email' },
+   password: { required: true, minlen: 5, regexp: /^[a-z0-9 ]+$/ig }
 }
-</highlight-code>
-					</b-tab>
+				</b-card-code>
 
-					<b-tab title="Result">
-<highlight-code lang="javascript">$vd.login.$errors = {{ $vd.login.$errors }};
+				<b-card-code title="Errors">
+$vd.login.$errors = {{ $vd.login.$errors }};
 
 $vd.register.$errors = {{ $vd.register.$errors }};
-</highlight-code>
-					</b-tab>
-				</b-tabs>
+				</b-card-code>
 			</div>
 		</div>
-	</div>
+	</b-card-example>
 </template>
 
 <script>
-	import VueDaval from '../mixins/VueDaval.js';
+	import VueDaval from '@/mixins/VueDaval.js';
+	import BCardExample from '@/components/bootstrap/BCardExample.vue';
+	import BCardCode from '@/components/bootstrap/BCardCode.vue';
 
 	export default {
 		name: 'GroupsValidation',
+
+		components: {
+			BCardExample,
+			BCardCode
+		},
 
 		mixins: [ VueDaval ],
 
@@ -101,7 +80,6 @@ $vd.register.$errors = {{ $vd.register.$errors }};
 			},
 
 			register: {
-				name: undefined,
 				email: undefined,
 				password: undefined
 			}
@@ -118,9 +96,8 @@ $vd.register.$errors = {{ $vd.register.$errors }};
 			},
 
 			register: {
-				name: { required: true, minlen: 3, regexp: /^[a-z0-9 ]+$/ig },
 				email: { required: true, type: 'email' },
-				password: { required: true, minlen: 5 }
+				password: { required: true, minlen: 5, regexp: /^[a-z0-9 ]+$/ig }
 			}
 		},
 
