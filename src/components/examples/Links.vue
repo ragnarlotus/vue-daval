@@ -3,9 +3,9 @@
 </template>
 
 <script>
-	import VueDaval from '../mixins/VueDaval.js';
+	import VueDaval from '@/mixins/VueDaval.js';
 
 	export default {
-		name: 'Errors'
+		name: 'Links'
 	}
 </script>

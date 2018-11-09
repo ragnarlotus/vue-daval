@@ -1,7 +1,5 @@
 <template>
-	<div class="mt-4">
-		<h4>Basic</h4>
-
+	<b-card-example title="Basic">
 		<div class="row">
 			<div class="col-sm-4">
 				<div class="form-group">
@@ -14,32 +12,30 @@
 			</div>
 
 			<div class="col-sm-8">
-				<b-tabs>
-					<b-tab title="Component" active>
-						<highlight-code lang="javascript">data: () => ({
-   email: undefined
-}),
+				<b-card-code title="Rules">
+email: { required: true, type: 'email' }
+				</b-card-code>
 
-vdRules: {
-   email: { required: true, type: 'email' }
-}
-</highlight-code>
-					</b-tab>
-
-					<b-tab title="Result">
-<highlight-code lang="javascript">$vd.email.$errors = {{ $vd.email.$errors }};</highlight-code>
-					</b-tab>
-				</b-tabs>
+				<b-card-code title="Errors">
+$vd.email.$errors = {{ $vd.email.$errors }};
+				</b-card-code>
 			</div>
 		</div>
-	</div>
+	</b-card-example>
 </template>
 
 <script>
-	import VueDaval from '../mixins/VueDaval.js';
+	import VueDaval from '@/mixins/VueDaval.js';
+	import BCardExample from '@/components/bootstrap/BCardExample.vue';
+	import BCardCode from '@/components/bootstrap/BCardCode.vue';
 
 	export default {
 		name: 'BasicValidation',
+
+		components: {
+			BCardExample,
+			BCardCode
+		},
 
 		mixins: [ VueDaval ],
 

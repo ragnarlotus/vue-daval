@@ -7,7 +7,7 @@
 </template>
 
 <script>
-	import ExamplesIndex from './examples/index.vue';
+	import ExamplesIndex from '@/components/examples/index.vue';
 
 	export default {
 		name: 'app',

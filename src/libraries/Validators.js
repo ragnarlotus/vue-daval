@@ -1,6 +1,6 @@
 // Validators library
 
-import * as Utils from '../../libraries/Utils.js';
+import * as Utils from './Utils.js';
 
 const types = {
 	boolean(value) {
@@ -98,7 +98,7 @@ export function minlen(rule, value) {
 	if (/(string|array)/.test(typeof value) === false)
 		return false;
 
-	if (value.length > 0 && value.length < rule)
+	if (value.length < rule)
 		return false;
 
 	return true;
