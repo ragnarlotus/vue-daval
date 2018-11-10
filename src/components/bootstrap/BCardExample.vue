@@ -1,5 +1,5 @@
 <template>
-	<b-card header-bg-variant="success" header-text-variant="white" class="mb-4">
+	<b-card header-bg-variant="dark" header-text-variant="white" class="mb-4">
 		<h6 slot="header" class="mb-0">{{ title }}</h6>
 		<slot></slot>
 	</b-card>
