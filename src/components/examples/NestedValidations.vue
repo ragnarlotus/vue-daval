@@ -1,25 +1,20 @@
 <template>
-	<b-card-example title="Nested and dynamic">
+	<b-card-example title="Nested">
 		<div class="row">
 			<div class="col-sm-4">
-				<h5>Address book</h5>
-
 				<b-card v-for="(person, i) in persons" :key="i" class="mb-4">
 					<div slot="header" class="form-group mb-0">
 						<input v-model="person.name" placeholder="Name" :class="$vd.persons[i]? getInputClass($vd.persons[i].name) : ''">
 						<div v-show="$vd.persons[i].name.$error" class="invalid-feedback">{{ $vd.persons[i].name.$error }}</div>
 					</div>
 
-					<div class="form-group">
+					<div class="form-group mb-0">
 						<input v-model="person.address" placeholder="Address" :class="$vd.persons[i]? getInputClass($vd.persons[i].address) : ''">
 						<div v-show="$vd.persons[i].address.$error" class="invalid-feedback">{{ $vd.persons[i].address.$error }}</div>
 					</div>
-
-					<b-button @click="removePerson(i)" variant="danger" size="sm">Remove</b-button>
 				</b-card>
 
 				<b-button @click="$vd.persons.$validate()" variant="primary" size="sm">Validate persons</b-button>
-				<b-button @click="addPerson()" variant="secondary" size="sm" class="ml-2">Add person</b-button>
 			</div>
 
 			<div class="col-sm-8">
@@ -55,11 +50,11 @@ $vd.persons.$errors = {{ $vd.persons.$errors }};
 
 		data: () => ({
 			persons: [{
-				name: 'Name 1',
-				address: 'Address 1'
+				name: undefined,
+				address: undefined
 			}, {
-				name: 'Name 2',
-				address: 'Address 2'
+				name: undefined,
+				address: undefined
 			}]
 		}),
 
@@ -71,19 +66,6 @@ $vd.persons.$errors = {{ $vd.persons.$errors }};
 			persons: {
 				name: { required: true, minlen: 5 },
 				address: { required: true }
-			}
-		},
-
-		methods: {
-			addPerson() {
-				this.persons.push({
-					name: undefined,
-					address: undefined
-				});
-			},
-
-			removePerson(index) {
-				this.persons.splice(index, 1);
 			}
 		}
 	}

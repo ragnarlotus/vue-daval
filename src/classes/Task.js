@@ -109,7 +109,7 @@ export default class Task {
 	addValidationRuleResult(validation, rule, valid) {
 		validation.$result.add(rule, valid);
 
-		if (!valid)
+		if (valid !== true)
 			this.valid = false;
 
 		if (validation.$validated) {

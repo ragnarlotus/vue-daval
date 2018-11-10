@@ -133,7 +133,13 @@ export function length(rule, value) {
 
 
 export function equals(rule, value) {
+	if (value === undefined || value === null)
+		return true;
+
 	let value2 = Utils.pathToValue(rule, this.$vd).$data;
+
+	if (typeof value2 === 'undefined' && typeof value !== 'undefined')
+		return false;
 
 	if (value2.toString() !== value.toString())
 		return false;
