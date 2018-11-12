@@ -13,7 +13,8 @@
     "form",
     "model",
     "input",
-    "validator"
+    "validator",
+    "validation"
   ],
   "license": "MIT",
   "bugs": {

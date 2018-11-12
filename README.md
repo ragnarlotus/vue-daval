@@ -2,6 +2,13 @@
 
 This is a Vue data validator, trying to cover all needs and built on top of ES6 to achieve the best architecture.
 
+[![npm](https://img.shields.io/npm/v/vue-daval.svg?style=flat-square)](https://www.npmjs.com/package/vue-daval)
+[![npm](https://img.shields.io/npm/dt/vue-daval.svg?style=flat-square)](https://www.npmjs.com/package/vue-daval)
+[![npm bundle size (minified)](https://img.shields.io/bundlephobia/min/vue-daval.svg?style=flat-square)](https://www.npmjs.com/package/vue-daval)
+[![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/vue-daval.svg?style=flat-square)](https://www.npmjs.com/package/vue-daval)
+[![GitHub issues](https://img.shields.io/github/issues-raw/deulos/vue-daval.svg?style=flat-square)](https://www.npmjs.com/package/vue-daval)
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://www.npmjs.com/package/vue-daval)
+
 ## Demo
 
 You can view a [demo and examples here](https://deulos.github.io/vue-daval/).
@@ -20,7 +27,7 @@ You can view a [demo and examples here](https://deulos.github.io/vue-daval/).
 | Real time | Some validators show the results in next tick, so they are not displayed. This component updates the template once the validations are finished |
 | Async validations | If multiple validations are done it will control the times |
 | Revalidations | It controls whether a validation is performed or not and needs to revalide |
-| Dependencies free | Its just ~40 KB minified and served as mixin just with vue as dependency |
+| Dependencies free | Its just ~46 KB minified and served as mixin just with vue as dependency |
 | Community open | Feel free to contribute or bring suggestions, any improvement will be at least taken in mind, discussed and accepted if reasonable, just keep the the previous rules in mind |
 
 ## Quickstart
@@ -106,7 +113,7 @@ export default {
 
 ## Performance
 
-Weight is just 40 KB so is pretty light and is tweaked to be as fast as possible keeping code readability, developed with ES6 syntax and built with Vue CLI 3.
+Weight is just 46 KB so is pretty light and is tweaked to be as fast as possible keeping code readability, developed with ES6 syntax and built with Vue CLI 3.
 
 ## Included validatiors
 
