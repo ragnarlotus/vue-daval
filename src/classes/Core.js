@@ -43,6 +43,9 @@ export default class Core {
 			task = new Task(this.$vm, dataPath, revalidate);
 
 			this.$tasks.set(path, task);
+
+		} else {
+			task.updateTime();
 		}
 
 		task.run();

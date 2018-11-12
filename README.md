@@ -1,6 +1,6 @@
 ## Overview
 
-This is a Vue data validator, developed with the lack of other validators in mind and is built on top of ES6 trying to achieve the best architecture.
+This is a Vue data validator, trying to cover all needs and built on top of ES6 to achieve the best architecture.
 
 ## Demo
 
@@ -17,7 +17,7 @@ You can view a [demo and examples here](https://deulos.github.io/vue-daval/).
 | Maximum customization | Trying always to be as open and configurable as possible, validations, messages and behaviour |
 | Performance | It is developed with performance in mind, reducing time and processing considerably |
 | Promises | Will detect promises and handle properly without need of external packages |
-| Real time | Some validators show the results  in next tick, so they are not displayed. This component updates the template once the validations are finished |
+| Real time | Some validators show the results in next tick, so they are not displayed. This component updates the template once the validations are finished |
 | Async validations | If multiple validations are done it will control the times |
 | Revalidations | It controls whether a validation is performed or not and needs to revalide |
 | Dependencies free | Its just ~40 KB minified and served as mixin just with vue as dependency |
@@ -41,7 +41,6 @@ npm install --save vue-daval
    <input v-model="register.alias">
    <input type="email" v-model="register.email">
    <input type="password" v-model="register.password">
-   <input type="password" v-model="register.passwordRepeat">
 
    <button type="submit">Register</button>
 </form>
@@ -62,8 +61,7 @@ export default {
       register: {
          alias: undefined,
          email: undefined,
-         password: undefined,
-         passwordRepeat: undefined
+         password: undefined
       }
    }),
 
@@ -80,8 +78,7 @@ export default {
          email: { required: true, type: 'email', checkEmail: (email) => {
             return this.$http.post('/users/check/email', { email: email });
          }},
-         password: { required: true, minlen: 5, links: 'register.passwordRepeat' },
-         passwordRepeat: { required: true, equals: 'register.password' }
+         password: { required: true, minlen: 5 }
       }
    },
 
@@ -111,7 +108,7 @@ export default {
 
 Weight is just 40 KB so is pretty light and is tweaked to be as fast as possible keeping code readability, developed with ES6 syntax and built with Vue CLI 3.
 
-## Included validations
+## Included validatiors
 
 * Type: check the type of value, supporting boolean, number, integer, float, string, url, email and date.
 * Required: check if value is empty.

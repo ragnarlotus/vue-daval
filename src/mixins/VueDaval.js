@@ -23,6 +23,7 @@ export default {
 	},
 
 	vdConfig: {
+		validateOnType: true,
 		skipValidationsOnError: false,
 		skipRulesOnError: false
 	},

@@ -21,6 +21,8 @@ export default class Task {
 		this.valid = true;
 
 		this.addValidation(this.dataPath);
+
+		this.updateTime();
 	}
 
 	addValidation(dataPath) {
@@ -38,6 +40,7 @@ export default class Task {
 
 	run() {
 		let skipValidationsOnError = this.$vd.$getConfig('skipValidationsOnError');
+		let time = this.time;
 
 		for (let [path, validation] of this.validations.entries()) {
 			if (skipValidationsOnError && this.valid === false) {
@@ -45,13 +48,13 @@ export default class Task {
 				break;
 			}
 
-			this.checkValidation(validation);
+			this.checkValidation(validation, time);
 		}
 
 		this.checkValidationsFinished();
 	}
 
-	checkValidation(validation) {
+	checkValidation(validation, time) {
 		if (this.revalidate === false && validation.$validated === true) {
 			this.validated++;
 
@@ -64,7 +67,7 @@ export default class Task {
 		validation.$reset(false);
 
 		validation.$getRules().forEach((rule) => {
-			if (validation.$validated)
+			if (validation.$validated || time < this.time)
 				return;
 
 			this.checkValidationRule(validation, rule);
@@ -77,15 +80,18 @@ export default class Task {
 		let validator = this.$vd.$getValidator(ruleName);
 		let data = validation.$data;
 
-		if (validator !== undefined) {
+		if (ruleName !== 'required' && (data === undefined || data === null) && ('required' in validation === false || validation.required === false)) {
+			valid = true;
+
+		} else if (validator !== undefined) {
 			if (Utils.isFunction(ruleValue))
 				ruleValue = ruleValue.call($vm);
 
-			valid = validator.call(this.$vm, ruleValue, data);
+			valid = validator.call(this.$vm, ruleValue, data, validation);
 
 		} else if (Utils.isFunction(ruleValue)) {
 			validator = validation.$rules[ruleName];
-			valid = validator.call(this.$vm, data);
+			valid = validator.call(this.$vm, data, validation);
 
 		} else {
 			console.warn('Rule '+ ruleName +' not valid');
