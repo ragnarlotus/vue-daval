@@ -10,6 +10,9 @@ import javascript from 'highlight.js/lib/languages/javascript';
 import 'highlight.js/styles/ir-black.css';
 hljs.registerLanguage('javascript', javascript);
 
+import VueHighlightJS from 'vue-highlight.js';
+Vue.use(VueHighlightJS);
+
 import App from './App.vue';
 
 Vue.config.productionTip = false;
