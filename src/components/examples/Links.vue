@@ -9,7 +9,7 @@
 				</div>
 
 				<div class="form-group">
-					<label>Password repeat</label>
+					<label>Field 2</label>
 					<input type="field1" v-model="field2" :class="getInputClass($vd.field2)">
 					<div v-show="$vd.field2.$error" class="invalid-feedback">{{ $vd.field2.$error }}</div>
 				</div>
