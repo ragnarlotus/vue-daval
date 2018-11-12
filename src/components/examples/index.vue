@@ -11,14 +11,6 @@
 	import DynamicValidation from './DynamicValidation.vue';
 	import CustomValidation from './CustomValidation.vue';
 	import Links from './Links.vue';
-	import OwnValidators from './OwnValidators.vue';
-	import CustomMessages from './CustomMessages.vue';
-	import SpecificMessage from './SpecificMessage.vue';
-	import Result from './Result.vue';
-	import ValidationResult from './ValidationResult.vue';
-	import ResetResult from './ResetResult.vue';
-	import Errors from './Errors.vue';
-	import Configurations from './Configurations.vue';
 
 	export default {
 		name: 'ExamplesIndex',
@@ -29,15 +21,7 @@
 			NestedValidations,
 			DynamicValidation,
 			CustomValidation,
-			Links,
-			OwnValidators,
-			CustomMessages,
-			SpecificMessage,
-			Result,
-			ValidationResult,
-			ResetResult,
-			Errors,
-			Configurations
+			Links
 		},
 
 		data: () => ({
@@ -47,15 +31,7 @@
 				'NestedValidations',
 				'DynamicValidation',
 				'CustomValidation',
-				'Links',
-				/*'OwnValidators',
-				'CustomMessages',
-				'SpecificMessage',
-				'Result',
-				'ValidationResult',
-				'ResetResult',
-				'Errors',
-				'Configurations',*/
+				'Links'
 			]
 		}),
 

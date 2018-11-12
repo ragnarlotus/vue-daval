@@ -18,7 +18,8 @@ export default class DataPath {
 		this.$proxy = new Proxy(this, this);
 		this.$target = this;
 
-		this.$createWatcher();
+		if (this.$vd.$getConfig('validateOnType'))
+			this.$createWatcher();
 
 		if (this.$createChilds() === false)
 			this.$result = new Result(this);
@@ -33,6 +34,9 @@ export default class DataPath {
 		if (this.$hasRules()) {
 			if (prop === '$validated')
 				return this.$result.validated;
+
+			if (prop === '$hasError')
+				return this.$result.hasError();
 
 			if (prop === '$error')
 				return this.$result.error;
