@@ -14,7 +14,7 @@
 					<div v-show="$vd.field2.$error" class="invalid-feedback">{{ $vd.field2.$error }}</div>
 				</div>
 
-				<b-button variant="primary" @click="$vd.$validate()">Validate field1s</b-button>
+				<b-button variant="primary" @click="$vd.$validate()">Validate fields</b-button>
 			</div>
 
 			<div class="col-sm-8">
