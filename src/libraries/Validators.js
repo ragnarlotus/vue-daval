@@ -54,9 +54,6 @@ export function required(rule, value) {
 	if (type === 'undefined' || type === 'null')
 		return false;
 
-	if (/(string|array|number)/.test(type) === false)
-		return false;
-
 	if (value.toString().length === 0)
 		return false;
 
