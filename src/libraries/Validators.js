@@ -49,12 +49,7 @@ export function required(rule, value) {
 	if (rule === false)
 		return true;
 
-	let type = typeof value;
-
-	if (type === 'undefined' || type === 'null')
-		return false;
-
-	if (value.toString().length === 0)
+	if (!value)
 		return false;
 
 	return true;
