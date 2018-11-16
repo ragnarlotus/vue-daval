@@ -87,7 +87,10 @@ export function max(rule, value) {
 
 
 export function minlen(rule, value) {
-	if (/(string|array)/.test(typeof value) === false)
+	if (Utils.isNumber(value))
+		value = value.toString();
+
+	else if (!Utils.isString(value) && !Utils.isArray(value))
 		return false;
 
 	if (value.length < rule)
@@ -98,7 +101,10 @@ export function minlen(rule, value) {
 
 
 export function maxlen(rule, value) {
-	if (/(string|array)/.test(typeof value) === false)
+	if (Utils.isNumber(value))
+		value = value.toString();
+
+	else if (!Utils.isString(value) && !Utils.isArray(value))
 		return false;
 
 	if (value.length > rule)
@@ -109,15 +115,13 @@ export function maxlen(rule, value) {
 
 
 export function length(rule, value) {
-	let type = typeof value;
+	if (Utils.isNumber(value))
+		value = value.toString();
 
-	if (/(string|array|number)/.test(type) === false)
+	else if (!Utils.isString(value) && !Utils.isArray(value))
 		return false;
 
-	if (type === 'array' && value.length !== rule)
-		return false;
-
-	if (value.toString().length !== rule)
+	if (value.length !== rule)
 		return false;
 
 	return true;
