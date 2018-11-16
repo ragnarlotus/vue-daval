@@ -49,7 +49,7 @@ export function required(rule, value) {
 	if (rule === false)
 		return true;
 
-	if (!value)
+	if (value === undefined || value === null || value === '')
 		return false;
 
 	return true;
