@@ -131,10 +131,7 @@ export function length(rule, value) {
 export function equals(rule, value) {
 	let value2 = Utils.pathToValue(rule, this.$vd).$data;
 
-	if (value2 === undefined && value !== undefined)
-		return false;
-
-	if (value2.toString() !== value.toString())
+	if (JSON.stringify(Utils.sortObjectAttributes(value)) !== JSON.stringify(Utils.sortObjectAttributes(value2)))
 		return false;
 
 	return true;
