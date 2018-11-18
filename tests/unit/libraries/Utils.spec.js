@@ -1,6 +1,6 @@
 import * as Utils from '@/libraries/Utils.js';
 
-describe('Utils:isString', () => {
+describe('Utils.isString', () => {
 
 	it('identifies a string as string', () => {
 		let value = 'this is a string';
@@ -40,7 +40,7 @@ describe('Utils:isString', () => {
 
 });
 
-describe('Utils:isArray', () => {
+describe('Utils.isArray', () => {
 
 	it('identifies a string as not array', () => {
 		let value = 'this is a string';
@@ -80,7 +80,7 @@ describe('Utils:isArray', () => {
 
 });
 
-describe('Utils:isObject', () => {
+describe('Utils.isObject', () => {
 
 	it('identifies a string as not object', () => {
 		let value = 'this is a string';
@@ -120,7 +120,7 @@ describe('Utils:isObject', () => {
 
 });
 
-describe('Utils:isPromise', () => {
+describe('Utils.isPromise', () => {
 
 	it('identifies a string as not promise', () => {
 		let value = 'this is a string';
@@ -160,7 +160,7 @@ describe('Utils:isPromise', () => {
 
 });
 
-describe('Utils:isFunction', () => {
+describe('Utils.isFunction', () => {
 
 	it('identifies a string as not function', () => {
 		let value = 'this is a string';
@@ -200,7 +200,7 @@ describe('Utils:isFunction', () => {
 
 });
 
-describe('Utils:sortObjectAttributes', () => {
+describe('Utils.sortObjectAttributes', () => {
 
 	it('returns an object with properties sorted', () => {
 		let o = {
@@ -218,7 +218,7 @@ describe('Utils:sortObjectAttributes', () => {
 
 });
 
-describe('Utils:pathToValue', () => {
+describe('Utils.pathToValue', () => {
 
 	it('returns the value of object attibute from string path', () => {
 		let o = {

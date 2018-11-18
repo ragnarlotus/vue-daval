@@ -1,7 +1,7 @@
 import * as Validators from '@/libraries/Validators.js';
 import * as Utils from '@/libraries/Utils.js';
 
-describe('Validators:type', () => {
+describe('Validators.type', () => {
 
 	// Boolean
 	it('validates true as boolean', () => {
@@ -165,7 +165,7 @@ describe('Validators:type', () => {
 
 });
 
-describe('Validators:required', () => {
+describe('Validators.required', () => {
 
 	it('validates undefined when required as error', () => {
 		expect(Validators.required(true, undefined)).toBe(false);
@@ -205,7 +205,7 @@ describe('Validators:required', () => {
 
 });
 
-describe('Validators:regexp', () => {
+describe('Validators.regexp', () => {
 
 	it('validates a valid regexp', () => {
 		expect(Validators.regexp(/^[0-9]+$/, '1234')).toBe(true);
@@ -217,7 +217,7 @@ describe('Validators:regexp', () => {
 
 });
 
-describe('Validators:min', () => {
+describe('Validators.min', () => {
 
 	it('validates a number being bigger than min as valid', () => {
 		expect(Validators.min(5, 8)).toBe(true);
@@ -233,7 +233,7 @@ describe('Validators:min', () => {
 
 });
 
-describe('Validators:max', () => {
+describe('Validators.max', () => {
 
 	it('validates a number being bigger than max as not valid', () => {
 		expect(Validators.max(5, 8)).toBe(false);
@@ -249,7 +249,7 @@ describe('Validators:max', () => {
 
 });
 
-describe('Validators:minlen', () => {
+describe('Validators.minlen', () => {
 
 	it('validates a string being larger than minlen as valid', () => {
 		expect(Validators.minlen(5, 'abcdfghi')).toBe(true);
@@ -281,7 +281,7 @@ describe('Validators:minlen', () => {
 
 });
 
-describe('Validators:maxlen', () => {
+describe('Validators.maxlen', () => {
 
 	it('validates a string being larger than maxlen as not valid', () => {
 		expect(Validators.maxlen(5, 'abcdfghi')).toBe(false);
@@ -313,7 +313,7 @@ describe('Validators:maxlen', () => {
 
 });
 
-describe('Validators:length', () => {
+describe('Validators.length', () => {
 
 	it('validates a string being larger than length as not valid', () => {
 		expect(Validators.length(5, 'abcdfghi')).toBe(false);
@@ -345,7 +345,7 @@ describe('Validators:length', () => {
 
 });
 
-describe('Validators:equals', () => {
+describe('Validators.equals', () => {
 
 	it('validates a string not equal as not valid', () => {
 		Utils.pathToValue = jest.fn().mockReturnValue({
@@ -397,7 +397,7 @@ describe('Validators:equals', () => {
 
 });
 
-describe('Validators:is', () => {
+describe('Validators.is', () => {
 
 	it('validates a value being the same', () => {
 		expect(Validators.is(5, 5)).toBe(true);
@@ -409,7 +409,7 @@ describe('Validators:is', () => {
 
 });
 
-describe('Validators:isnot', () => {
+describe('Validators.isnot', () => {
 
 	it('validates a value being the same', () => {
 		expect(Validators.isnot(5, 5)).toBe(false);
@@ -421,7 +421,7 @@ describe('Validators:isnot', () => {
 
 });
 
-describe('Validators:isint', () => {
+describe('Validators.isint', () => {
 
 	it('validates a value being in the array', () => {
 		let a = ['a', 'b', 'c'];
