@@ -24,6 +24,13 @@ export function isFunction(o) {
 	return typeof o === 'function';
 }
 
+export function sortObjectAttributes(o) {
+	if (typeof o !== 'object' || !o)
+		return o;
+
+	return Object.keys(o).sort().reduce((c, key) => (c[key] = sortObjectAttributes(o[key]), c), {});
+}
+
 export function pathToValue(path, data) {
 	if (isString(path))
 		path = path.split('.');
