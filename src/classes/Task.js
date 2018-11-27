@@ -4,7 +4,7 @@ import * as Utils from '../libraries/Utils.js';
 
 export default class Task {
 
-	constructor(vm, dataPath, revalidate) {
+	constructor(vm, dataPath, revalidate = false) {
 		this.$vm = vm;
 		this.$vd = vm.$vd;
 
@@ -43,12 +43,12 @@ export default class Task {
 		let time = this.time;
 
 		for (let [path, validation] of this.validations.entries()) {
+			this.checkValidation(validation, time);
+
 			if (skipValidationsOnError && this.valid === false) {
-				this.validated = this.validations.size;
+				this.finished = true;
 				break;
 			}
-
-			this.checkValidation(validation, time);
 		}
 
 		this.checkValidationsFinished();
