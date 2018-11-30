@@ -1,5 +1,5 @@
 import Core from '../classes/Core.js';
-import DataPath from '../classes/Paths/DataPath.js';
+import DataPath from '../classes/paths/DataPath.js';
 import * as Validators from '../libraries/Validators.js';
 
 export default {
