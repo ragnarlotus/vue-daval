@@ -80,12 +80,16 @@ export default class Task {
 		let validator = this.$vd.$getValidator(ruleName);
 		let data = validation.$data;
 
-		if (ruleName !== 'required' && (data === undefined || data === null) && ('required' in validation === false || validation.required === false)) {
+		if (
+			ruleName !== 'required' &&
+			[undefined, null].includes(data) &&
+			('required' in validation.$rules === false || validation.$rules['required'] === false)
+		) {
 			valid = true;
 
 		} else if (validator !== undefined) {
 			if (Utils.isFunction(ruleValue))
-				ruleValue = ruleValue.call($vm);
+				ruleValue = ruleValue.call(this.$vm);
 
 			valid = validator.call(this.$vm, ruleValue, data, validation);
 
@@ -126,12 +130,16 @@ export default class Task {
 	}
 
 	checkValidationsFinished() {
-		if (this.validations.size > this.validated || this.finished)
+		if (this.validations.size > this.validated && this.finished === false)
 			return;
 
 		this.finished = true;
 
-		this.valid? this.onSuccess() : this.onError();
+		if (this.valid === true)
+			this.onSuccess();
+
+		else
+			this.onError();
 
 		this.$vm.$forceUpdate();
 
