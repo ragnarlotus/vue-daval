@@ -73,7 +73,6 @@ export default class DataPath {
 
 	$createChilds() {
 		let child;
-		let childPath;
 
 		if (Utils.isObject(this.$data)) {
 			Object.keys(this.$rules).forEach((key) => {
@@ -242,7 +241,7 @@ export default class DataPath {
 		return path + this.$key;
 	}
 
-	$delete(recursive = true) {
+	$delete() {
 		Object.values(this.$childs).forEach((child) => {
 			child.$delete();
 		});

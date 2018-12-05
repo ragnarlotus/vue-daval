@@ -42,7 +42,7 @@ export default class Task {
 		let skipValidationsOnError = this.$vd.$getConfig('skipValidationsOnError');
 		let time = this.time;
 
-		for (let [path, validation] of this.validations.entries()) {
+		for (let validation of this.validations.values()) {
 			this.checkValidation(validation, time);
 
 			if (skipValidationsOnError && this.valid === false) {
@@ -98,6 +98,7 @@ export default class Task {
 			valid = validator.call(this.$vm, data, validation);
 
 		} else {
+			// eslint-disable-next-line no-console
 			console.warn('Rule '+ ruleName +' not valid');
 			valid = true;
 		}
@@ -146,4 +147,4 @@ export default class Task {
 		this.$vd.$removeTask(this);
 	}
 
-};
+}

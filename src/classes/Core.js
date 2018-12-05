@@ -1,7 +1,5 @@
 // Core class
 
-import * as Utils from '../libraries/Utils.js';
-import UndefinedPath from './paths/UndefinedPath.js';
 import Task from './Task.js';
 
 export default class Core {
@@ -59,4 +57,4 @@ export default class Core {
 		this.$tasks.delete(path);
 	}
 
-};
+}
