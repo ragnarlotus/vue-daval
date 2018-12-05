@@ -69,4 +69,4 @@ export default class Result {
 		this.validated = false;
 	}
 
-};
+}

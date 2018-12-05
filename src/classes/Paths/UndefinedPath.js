@@ -5,6 +5,7 @@ export default class UndefinedPath {
 	constructor(prop) {
 		this.prop = prop;
 
+		// eslint-disable-next-line no-console
 		console.error('Rules not defined for '+ prop);
 
 		return new Proxy(this, this);
