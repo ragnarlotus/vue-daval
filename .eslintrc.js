@@ -46,6 +46,7 @@ module.exports = {
         "curly": "off",
         "default-case": "off",
         "security/detect-object-injection": "off",
+        "security/detect-no-csrf-before-method-override": "error",
         "dot-location": ["error", "property"],
         "dot-notation": "error",
         "eol-last": ["error", "always"],
