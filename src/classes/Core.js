@@ -1,5 +1,3 @@
-// Core class
-
 import Task from './Task.js';
 
 export default class Core {

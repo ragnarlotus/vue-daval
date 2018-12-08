@@ -1,5 +1,3 @@
-// UndefinedPath
-
 export default class UndefinedPath {
 
 	constructor(prop) {

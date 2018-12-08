@@ -1,5 +1,3 @@
-// Validators library
-
 import * as Utils from './Utils.js';
 
 const types = {
@@ -24,10 +22,12 @@ const types = {
 	},
 
 	url(value) {
+		// eslint-disable-next-line security/detect-unsafe-regex
 		return (new RegExp('^(?!mailto:)(?:(?:http|https|ftp)://|//)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$', 'i')).test(value);
 	},
 
 	email(value) {
+		// eslint-disable-next-line security/detect-unsafe-regex
 		return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(value);
 	},
 
@@ -57,6 +57,7 @@ export function required(rule, value) {
 
 
 export function regexp(rule, value) {
+	// eslint-disable-next-line security/detect-non-literal-regexp
 	if ((new RegExp(rule)).test(value) === false)
 		return false;
 
@@ -129,6 +130,7 @@ export function length(rule, value) {
 
 
 export function equals(rule, value) {
+	// eslint-disable-next-line no-invalid-this
 	let value2 = Utils.pathToValue(rule, this.$vd).$data;
 
 	if (JSON.stringify(Utils.sortObjectAttributes(value)) !== JSON.stringify(Utils.sortObjectAttributes(value2)))
@@ -139,6 +141,7 @@ export function equals(rule, value) {
 
 
 export function is(rule, value) {
+	// eslint-disable-next-line eqeqeq
 	if (rule != value)
 		return false;
 
@@ -147,6 +150,7 @@ export function is(rule, value) {
 
 
 export function isnot(rule, value) {
+	// eslint-disable-next-line eqeqeq
 	if (rule == value)
 		return false;
 

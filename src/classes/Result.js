@@ -1,5 +1,3 @@
-// Result class
-
 import * as Utils from '../libraries/Utils.js';
 
 export default class Result {
@@ -33,7 +31,7 @@ export default class Result {
 
 	getMessage(rule, message) {
 		if (!message)
-			message = this.dataPath.$rules['message'];
+			message = this.dataPath.$rules.message;
 
 		if (!message)
 			message = this.vd.$getMessage(rule);
@@ -41,7 +39,7 @@ export default class Result {
 		if (!message)
 			return this.vd.$getMessage('undefined');
 
-		let field = this.dataPath.$rules['field'] || this.dataPath.$key;
+		let field = this.dataPath.$rules.field || this.dataPath.$key;
 
 		message = message.replace('{field}', field);
 
@@ -59,7 +57,7 @@ export default class Result {
 	}
 
 	getErrors() {
-		return Object.values(this.rules).filter((error) => error);
+		return Object.values(this.rules).filter(error => error);
 	}
 
 	reset() {
