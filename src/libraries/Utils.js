@@ -1,5 +1,3 @@
-// Utils library
-
 export function isString(o) {
 	return typeof o === 'string';
 }
@@ -28,6 +26,7 @@ export function sortObjectAttributes(o) {
 	if (typeof o !== 'object' || !o)
 		return o;
 
+	// eslint-disable-next-line no-return-assign, no-sequences
 	return Object.keys(o).sort().reduce((c, key) => (c[key] = sortObjectAttributes(o[key]), c), {});
 }
 
@@ -35,9 +34,7 @@ export function pathToValue(path, data) {
 	if (isString(path))
 		path = path.split('.');
 
-	let value = path.reduce((prev, cur) => {
-		return prev[cur];
-	}, data);
+	let value = path.reduce((prev, cur) => prev[cur], data);
 
 	return value;
 }

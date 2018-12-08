@@ -10,7 +10,7 @@ export default {
 		let data = Object.assign({}, this.$data);
 
 		if (this._computedWatchers) {
-			Object.keys(this._computedWatchers).forEach((key) => {
+			Object.keys(this._computedWatchers).forEach(key => {
 				data[key] = this[key];
 			});
 		}

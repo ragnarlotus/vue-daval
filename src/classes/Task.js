@@ -1,5 +1,3 @@
-// Task class
-
 import * as Utils from '../libraries/Utils.js';
 
 export default class Task {
@@ -29,8 +27,8 @@ export default class Task {
 		if (dataPath.$hasRules())
 			this.validations.set(dataPath.$toString(), dataPath);
 
-		Object.values(dataPath.$childs).forEach((child) => {
-			this.addValidation(child);
+		Object.values(dataPath.$childs).forEach(child => {
+			this.addValidation(child)
 		});
 	}
 
@@ -66,7 +64,7 @@ export default class Task {
 
 		validation.$reset(false);
 
-		validation.$getRules().forEach((rule) => {
+		validation.$getRules().forEach(rule => {
 			if (validation.$validated || time < this.time)
 				return;
 
@@ -83,7 +81,7 @@ export default class Task {
 		if (
 			ruleName !== 'required' &&
 			[undefined, null].includes(data) &&
-			('required' in validation.$rules === false || validation.$rules['required'] === false)
+			('required' in validation.$rules === false || validation.$rules.required === false)
 		) {
 			valid = true;
 
@@ -107,7 +105,7 @@ export default class Task {
 			valid.then(() => {
 				this.addValidationRuleResult(validation, ruleName, true);
 
-			}).catch((error) => {
+			}).catch(error => {
 				this.addValidationRuleResult(validation, ruleName, error.statusText || error);
 			});
 

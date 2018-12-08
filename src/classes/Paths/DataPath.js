@@ -1,5 +1,3 @@
-// Path class
-
 import * as Utils from '../../libraries/Utils.js';
 import UndefinedPath from './UndefinedPath.js';
 import Result from '../Result.js';
@@ -51,7 +49,7 @@ export default class DataPath {
 			let errors = {};
 			let childErrors;
 
-			Object.values(this.$childs).forEach((child) => {
+			Object.values(this.$childs).forEach(child => {
 				childErrors = child.$errors;
 
 				if (Object.keys(childErrors).length > 0)
@@ -75,7 +73,7 @@ export default class DataPath {
 		let child;
 
 		if (Utils.isObject(this.$data)) {
-			Object.keys(this.$rules).forEach((key) => {
+			Object.keys(this.$rules).forEach(key => {
 				if (key in this.$data) {
 					child = new DataPath(this.$vm, key, this.$data[key], this.$rules[key], this);
 
@@ -100,14 +98,12 @@ export default class DataPath {
 		let oldIndex;
 		let child;
 
-		oldChilds.forEach((child) => {
+		oldChilds.forEach(child => {
 			child.$deleteWatcher(true);
 		});
 
 		this.$data.forEach((item, newIndex) => {
-			oldIndex = oldChilds.findIndex((child) => {
-				return child.$data === item;
-			});
+			oldIndex = oldChilds.findIndex(child => child.$data === item);
 
 			if (oldIndex !== -1) {
 				child = oldChilds.splice(oldIndex, 1)[0];
@@ -132,7 +128,7 @@ export default class DataPath {
 			return;
 
 		if (recursive) {
-			Object.values(this.$childs).forEach((child) => {
+			Object.values(this.$childs).forEach(child => {
 				child.$createWatcher();
 			});
 		}
@@ -166,7 +162,7 @@ export default class DataPath {
 
 	$deleteWatcher(recursive = false) {
 		if (recursive) {
-			Object.values(this.$childs).forEach((child) => {
+			Object.values(this.$childs).forEach(child => {
 				child.$deleteWatcher(true);
 			});
 		}
@@ -191,7 +187,7 @@ export default class DataPath {
 
 	$reset(recursive = true) {
 		if (recursive) {
-			Object.values(this.$childs).forEach((child) => {
+			Object.values(this.$childs).forEach(child => {
 				child.$reset();
 			});
 		}
@@ -224,7 +220,7 @@ export default class DataPath {
 
 		let dataPath;
 
-		links.forEach((link) => {
+		links.forEach(link => {
 			dataPath = Utils.pathToValue(link, this.$vd);
 
 			if (dataPath !== undefined)
@@ -242,7 +238,7 @@ export default class DataPath {
 	}
 
 	$delete() {
-		Object.values(this.$childs).forEach((child) => {
+		Object.values(this.$childs).forEach(child => {
 			child.$delete();
 		});
 
