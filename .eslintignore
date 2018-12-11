@@ -1,0 +1,8 @@
+coverage
+docs
+node_modules
+public
+src/components
+src/App.vue
+src/main.js
+tests
