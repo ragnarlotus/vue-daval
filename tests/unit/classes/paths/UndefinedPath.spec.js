@@ -3,17 +3,21 @@ import UndefinedPath from '@/classes/paths/UndefinedPath.js';
 describe('UndefinedPath class', () => {
 	let undefinedPath;
 
-	beforeEach(() => {
-		undefinedPath = {
-			$vd: {
-				$getConfig: jest.fn(),
-				$getMessage: jest.fn()
-			},
-			$getRules: jest.fn()
-		};
+	window.console.error = jest.fn();
+
+	it('accepts any property and consoles error', () => {
+		undefinedPath = new UndefinedPath('any');
+
+		expect(undefinedPath.property).toBeInstanceOf(UndefinedPath);
+
+		expect(console.error.mock.calls[0][0]).toContain('any');
+		expect(console.error.mock.calls[1][0]).toContain('any.property');
 	});
 
-	it('', () => {
+	it('returns empty string if vue-daval property', () => {
+		undefinedPath = new UndefinedPath('any');
+
+		expect(undefinedPath.$property).toBe('');
 	});
 
 });
