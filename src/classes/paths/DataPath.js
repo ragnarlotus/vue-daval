@@ -121,7 +121,7 @@ export default class DataPath {
 	}
 
 	$createWatcher(recursive = false) {
-		if (this.$watcher)
+		if ('$watcher' in this)
 			this.$watcher();
 
 		if (this.$key === '')
