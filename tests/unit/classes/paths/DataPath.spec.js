@@ -338,34 +338,37 @@ describe('DataPath class', () => {
 	it('updates childs managing watchers', () => {
 	});
 
-	it('', () => {
+	it('deletes own watcher', () => {
 	});
 
-	it('', () => {
+	it('deletes own and child watchers', () => {
 	});
 
-	it('$updateChilds', () => {
+	it('detects if path has rules', () => {
 	});
 
-	it('', () => {
+	it('gets the rules omitting reserved words', () => {
 	});
 
-	it('', () => {
+	it('resets own result', () => {
 	});
 
-	it('', () => {
+	it('resets own and child results', () => {
 	});
 
-	it('', () => {
+	it('performs the validation', () => {
 	});
 
-	it('', () => {
+	it('performs the validation revalidating', () => {
 	});
 
-	it('', () => {
+	it('runs links after validation success', () => {
 	});
 
-	it('', () => {
+	it('runs links after validation error', () => {
+	});
+
+	it('runs links after validation', () => {
 	});
 
 	it('returns the full path', () => {
