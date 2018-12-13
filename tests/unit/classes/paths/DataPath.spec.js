@@ -2,10 +2,6 @@ import DataPath from '@/classes/paths/DataPath.js';
 import UndefinedPath from '@/classes/paths/UndefinedPath.js';
 import Result from '@/classes/Result.js';
 
-process.on('unhandledRejection', (reason) => {
-  console.log('REJECTION', reason);
-});
-
 describe('DataPath class', () => {
 	let vm, dataPath, taskResult, onSuccess, onError;
 
@@ -428,66 +424,89 @@ describe('DataPath class', () => {
 
 	it('performs the validation', () => {
 		dataPath = new DataPath(vm, 'key', 'data', {});
-		let result = dataPath.$validate();
+		let response = dataPath.$validate();
 
-		expect(result).toBeInstanceOf(Promise);
+		expect(response).toBeInstanceOf(Promise);
 		expect(vm.$vd.$addTask).toHaveBeenCalled();
 	});
 
 	it('performs the validation revalidating', () => {
 		dataPath = new DataPath(vm, 'key', 'data', {});
-		let result = dataPath.$validate(true);
+		let response = dataPath.$validate(true);
 
-		expect(result).toBeInstanceOf(Promise);
+		expect(response).toBeInstanceOf(Promise);
 		expect(vm.$vd.$addTask.mock.calls[0][1]).toBe(true);
 	});
 
-	it('runs links after validation success', () => {
-		expect.assertions(1);
-
+	it('runs links after validation success', (done) => {
 		dataPath = new DataPath(vm, 'key', 'data', {
+			links: 'links',
 			linksThen: 'linksThen'
 		});
 
-		dataPath.$validateLinks = jest.fn();
-		let result = dataPath.$validate();
-
 		onSuccess();
 
-		result.then(() => {
+		dataPath.$validateLinks = jest.fn();
+		dataPath.$validate();
+
+		process.nextTick(() => {
+			expect(dataPath.$validateLinks).toHaveBeenCalledWith('links');
 			expect(dataPath.$validateLinks).toHaveBeenCalledWith('linksThen');
+			done();
 		});
 	});
 
-	fit('runs links after validation error', () => {
-		expect.assertions(1);
-
+	it('runs links after validation error', (done) => {
 		dataPath = new DataPath(vm, 'key', 'data', {
+			links: 'links',
 			linksCatch: 'linksCatch'
 		});
 
 		dataPath.$validateLinks = jest.fn();
-		let response = dataPath.$validate();
+		dataPath.$validate();
 
 		onError();
 
-		response.catch(() => {
-			expect(dataPath.$validateLinks).toHaveBeenCalled();
+		process.nextTick(() => {
+			expect(dataPath.$validateLinks).toHaveBeenCalledWith('links');
+			expect(dataPath.$validateLinks).toHaveBeenCalledWith('linksCatch');
+			done();
 		});
-
-		return Promise.reject('error');
-	});
-
-	it('runs links after validation', () => {
-
 	});
 
 	it('returns the full path', () => {
+		dataPath = new DataPath(vm, '', {
+			data1: {
+				data2: 'data2'
+			}
+		}, {
+			data1: {
+				data2: {}
+			}
+		});
 
+		expect(dataPath.data1.data2.$toString()).toBe('data1.data2');
 	});
 
 	it('deletes itself and childs', () => {
+		dataPath = new DataPath(vm, '', {
+			data1: {
+				data2: 'data2'
+			}
+		}, {
+			data1: {
+				data2: {}
+			}
+		});
 
+		expect(dataPath.data1.data2.$data).toBe('data2');
+		expect(Object.keys(dataPath.$childs).length).toBe(1);
+
+		dataPath.$deleteWatcher = jest.fn();
+		dataPath.$delete();
+
+		expect(dataPath.$deleteWatcher).toHaveBeenCalled();
+		expect(Object.keys(dataPath.$childs).length).toBe(0);
 	});
 
 });
