@@ -1,3 +1,4 @@
+import * as Utils from '@/libraries/Utils.js';
 import DataPath from '@/classes/paths/DataPath.js';
 import UndefinedPath from '@/classes/paths/UndefinedPath.js';
 import Result from '@/classes/Result.js';
@@ -444,16 +445,20 @@ describe('DataPath class', () => {
 			linksThen: 'linksThen'
 		});
 
-		onSuccess();
+		dataPath.$validateLinks = jest.fn().mockImplementation(() => {
+			let validateLinksCalls = dataPath.$validateLinks.mock.calls;
 
-		dataPath.$validateLinks = jest.fn();
+			if (validateLinksCalls.length === 2) {
+				expect(dataPath.$validateLinks).toHaveBeenCalledWith('links');
+				expect(dataPath.$validateLinks).toHaveBeenCalledWith('linksThen');
+
+				done();
+			}
+		});
+
 		dataPath.$validate();
 
-		process.nextTick(() => {
-			expect(dataPath.$validateLinks).toHaveBeenCalledWith('links');
-			expect(dataPath.$validateLinks).toHaveBeenCalledWith('linksThen');
-			done();
-		});
+		onSuccess();
 	});
 
 	it('runs links after validation error', (done) => {
@@ -462,16 +467,72 @@ describe('DataPath class', () => {
 			linksCatch: 'linksCatch'
 		});
 
-		dataPath.$validateLinks = jest.fn();
+		dataPath.$validateLinks = jest.fn().mockImplementation(() => {
+			let validateLinksCalls = dataPath.$validateLinks.mock.calls;
+
+			if (validateLinksCalls.length === 2) {
+				expect(dataPath.$validateLinks).toHaveBeenCalledWith('links');
+				expect(dataPath.$validateLinks).toHaveBeenCalledWith('linksCatch');
+
+				done();
+			}
+		});
+
 		dataPath.$validate();
 
 		onError();
+	});
 
-		process.nextTick(() => {
-			expect(dataPath.$validateLinks).toHaveBeenCalledWith('links');
-			expect(dataPath.$validateLinks).toHaveBeenCalledWith('linksCatch');
-			done();
+	it('does not validate links if not defined', () => {
+		dataPath = new DataPath(vm, 'key', 'data', {});
+
+		jest.spyOn(Utils, 'isArray');
+
+		dataPath.$validateLinks();
+
+		expect(Utils.isArray).not.toHaveBeenCalled();
+	});
+
+	xit('validates single link defined as string', () => {
+		dataPath = new DataPath(vm, 'key', ['qwe', 'asd'], {});
+
+		dataPath.$childs[0].$validate = jest.fn();
+		dataPath.$childs[1].$validate = jest.fn();
+
+		jest.spyOn(Utils, 'isArray').mockReturnValue(false);
+		jest.spyOn(Utils, 'pathToValue').mockReturnValue(dataPath.$childs[0]);
+
+		dataPath.$validateLinks('qwe');
+
+		expect(dataPath.$childs[0].$validate).toHaveBeenCalled();
+		expect(dataPath.$childs[1].$validate).not.toHaveBeenCalled();
+	});
+
+	it('validates multiple links defined as array', () => {
+		dataPath = new DataPath(vm, 'key', ['qwe', 'asd'], {});
+
+		dataPath.$childs[0].$validate = jest.fn();
+		dataPath.$childs[1].$validate = jest.fn();
+
+		console.log(Object.keys(dataPath.$childs));
+		jest.spyOn(Utils, 'isArray').mockReturnValue(true);
+		jest.spyOn(Utils, 'pathToValue').mockImplementation((path) => {
+			console.log(path);
+			if (path === 'qwe')
+				return dataPath.$childs[0];
+
+			if (path === 'asd')
+				return dataPath.$childs[1];
 		});
+
+		dataPath.$validateLinks(['qwe', 'asd']);
+
+		expect(dataPath.$childs[0].$validate).toHaveBeenCalled();
+		expect(dataPath.$childs[1].$validate).toHaveBeenCalled();
+	});
+
+	it('does not validate wrong links', () => {
+
 	});
 
 	it('returns the full path', () => {
