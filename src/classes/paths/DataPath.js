@@ -121,8 +121,7 @@ export default class DataPath {
 	}
 
 	$createWatcher(recursive = false) {
-		if ('$watcher' in this)
-			this.$watcher();
+		this.$deleteWatcher();
 
 		if (this.$key === '')
 			return;
@@ -192,7 +191,7 @@ export default class DataPath {
 			});
 		}
 
-		if (this.$result !== undefined)
+		if ('$result' in this)
 			this.$result.reset();
 	}
 
@@ -207,7 +206,7 @@ export default class DataPath {
 
 		}).finally(() => {
 			this.$validateLinks(this.$rules.links);
-		})
+		});
 
 		return result;
 	}
