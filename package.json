@@ -61,6 +61,7 @@
     }
   },
   "jest": {
+    "restoreMocks": true,
     "moduleFileExtensions": [
       "js",
       "jsx",
