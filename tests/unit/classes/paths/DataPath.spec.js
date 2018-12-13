@@ -2,15 +2,19 @@ import DataPath from '@/classes/paths/DataPath.js';
 import UndefinedPath from '@/classes/paths/UndefinedPath.js';
 import Result from '@/classes/Result.js';
 
+process.on('unhandledRejection', (reason) => {
+  console.log('REJECTION', reason);
+});
+
 describe('DataPath class', () => {
 	let vm, dataPath, taskResult, onSuccess, onError;
 
 	beforeEach(() => {
 		window.console.error = jest.fn();
 
-		taskResult = new Promise((success, error) => {
-			onSuccess = success;
-			onError = error;
+		taskResult = new Promise((resolve, reject) => {
+			onSuccess = resolve;
+			onError = reject;
 		});
 
 		vm = {
@@ -220,7 +224,7 @@ describe('DataPath class', () => {
 
 		dataPath.$createWatcher();
 
-		expect(dataPath.$watcher).toHaveBeenCalled();
+		expect(dataPath.$watcher).toBeUndefined();
 	});
 
 	it('does not creates the watcher if root of data', () => {
@@ -336,45 +340,154 @@ describe('DataPath class', () => {
 	});
 
 	it('updates childs managing watchers', () => {
+		vm.$vd.$getConfig.mockReturnValue(true);
+
+		let data = [{}, {}];
+		dataPath = new DataPath(vm, 'key', data, {});
+
+		dataPath.$data.push({});
+		dataPath.$data.splice(0, 1, data[1]);
+		dataPath.$data.splice(1, 1, data[0]);
+		dataPath.$updateChilds();
+
+		expect(Object.keys(dataPath.$childs).length).toBe(3);
+		expect(dataPath.$childs[0].$data).toBe(data[1]);
+		expect(dataPath.$childs[1].$data).toBe(data[0]);
+
+		expect(dataPath.$childs[0].$watcher).toHaveBeenCalled();
+		expect(dataPath.$childs[1].$watcher).toHaveBeenCalled();
 	});
 
 	it('deletes own watcher', () => {
+		vm.$vd.$getConfig.mockReturnValue(true);
+
+		dataPath = new DataPath(vm, 'key', 'data', {});
+		dataPath.$deleteWatcher();
+
+		expect(dataPath.$watcher).toBeUndefined();
 	});
 
 	it('deletes own and child watchers', () => {
+		vm.$vd.$getConfig.mockReturnValue(true);
+
+		dataPath = new DataPath(vm, 'key', ['qwe', 'asd'], {});
+
+		expect(dataPath.$watcher).toBeDefined();
+		expect(dataPath.$childs[0].$watcher).toBeDefined();
+		expect(dataPath.$childs[1].$watcher).toBeDefined();
+
+		dataPath.$deleteWatcher(true);
+
+		expect(dataPath.$watcher).toBeUndefined();
+		expect(dataPath.$childs[0].$watcher).toBeUndefined();
+		expect(dataPath.$childs[1].$watcher).toBeUndefined();
 	});
 
 	it('detects if path has rules', () => {
+		dataPath = new DataPath(vm, 'key', 'data', {});
+
+		expect(dataPath.$hasRules()).toBe(true);
+
+		dataPath = new DataPath(vm, 'key', [{}], {});
+
+		expect(dataPath.$hasRules()).toBe(false);
 	});
 
 	it('gets the rules omitting reserved words', () => {
+		dataPath = new DataPath(vm, 'key', 'data', {
+			test: 'test',
+			message: 'message',
+			field: 'field',
+			links: 'links',
+			linksThen: 'linksThen',
+			linksCatch: 'linksCatch'
+		});
+
+		expect(dataPath.$getRules()).toEqual(['test']);
 	});
 
 	it('resets own result', () => {
+		dataPath = new DataPath(vm, 'key', 'data', {});
+		dataPath.$result.reset = jest.fn();
+
+		dataPath.$reset(false);
+
+		expect(dataPath.$result.reset).toHaveBeenCalled();
 	});
 
-	it('resets own and child results', () => {
+	it('resets child results', () => {
+		dataPath = new DataPath(vm, 'key', ['qwe', 'asd'], {});
+		dataPath.$childs[0].$result.reset = jest.fn();
+		dataPath.$childs[1].$result.reset = jest.fn();
+
+		dataPath.$reset(true);
+
+		expect(dataPath.$childs[0].$result.reset).toHaveBeenCalled();
+		expect(dataPath.$childs[1].$result.reset).toHaveBeenCalled();
 	});
 
 	it('performs the validation', () => {
+		dataPath = new DataPath(vm, 'key', 'data', {});
+		let result = dataPath.$validate();
+
+		expect(result).toBeInstanceOf(Promise);
+		expect(vm.$vd.$addTask).toHaveBeenCalled();
 	});
 
 	it('performs the validation revalidating', () => {
+		dataPath = new DataPath(vm, 'key', 'data', {});
+		let result = dataPath.$validate(true);
+
+		expect(result).toBeInstanceOf(Promise);
+		expect(vm.$vd.$addTask.mock.calls[0][1]).toBe(true);
 	});
 
 	it('runs links after validation success', () => {
+		expect.assertions(1);
+
+		dataPath = new DataPath(vm, 'key', 'data', {
+			linksThen: 'linksThen'
+		});
+
+		dataPath.$validateLinks = jest.fn();
+		let result = dataPath.$validate();
+
+		onSuccess();
+
+		result.then(() => {
+			expect(dataPath.$validateLinks).toHaveBeenCalledWith('linksThen');
+		});
 	});
 
-	it('runs links after validation error', () => {
+	fit('runs links after validation error', () => {
+		expect.assertions(1);
+
+		dataPath = new DataPath(vm, 'key', 'data', {
+			linksCatch: 'linksCatch'
+		});
+
+		dataPath.$validateLinks = jest.fn();
+		let response = dataPath.$validate();
+
+		onError();
+
+		response.catch(() => {
+			expect(dataPath.$validateLinks).toHaveBeenCalled();
+		});
+
+		return Promise.reject('error');
 	});
 
 	it('runs links after validation', () => {
+
 	});
 
 	it('returns the full path', () => {
+
 	});
 
 	it('deletes itself and childs', () => {
+
 	});
 
 });
