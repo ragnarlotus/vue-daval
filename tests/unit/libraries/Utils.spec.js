@@ -248,7 +248,7 @@ describe('Utils.pathToValue', () => {
 		expect(value).toBe('c');
 	});
 
-	it('returns undefined and show a console warning when invalid path', () => {
+	it('returns undefined when invalid path', () => {
 		let o = {
 			a: {
 				b: 'b'

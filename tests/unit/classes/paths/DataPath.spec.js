@@ -151,6 +151,33 @@ describe('DataPath class', () => {
 		});
 	});
 
+	it('returns $errors recursively without childs not having errors', () => {
+		dataPath = new DataPath(vm, 'key', {
+			data1: 'data1',
+			data2: {
+				data21: 'data21'
+			}
+		}, {
+			data1: {
+				test1: 'test1'
+			},
+			data2: {
+				data21: {
+					test2: 'test2'
+				}
+			}
+		});
+
+		dataPath.data1.$errors = [];
+		dataPath.data2.data21.$errors = ['test2 error'];
+
+		expect(dataPath.$errors).toEqual({
+			data2: {
+				data21: ['test2 error']
+			}
+		});
+	});
+
 	it('returns a child', () => {
 		dataPath = new DataPath(vm, 'key', {
 			asdf: 'asdf'
@@ -493,16 +520,15 @@ describe('DataPath class', () => {
 		expect(Utils.isArray).not.toHaveBeenCalled();
 	});
 
-	xit('validates single link defined as string', () => {
+	it('validates single link defined as string', () => {
 		dataPath = new DataPath(vm, 'key', ['qwe', 'asd'], {});
 
 		dataPath.$childs[0].$validate = jest.fn();
 		dataPath.$childs[1].$validate = jest.fn();
 
-		jest.spyOn(Utils, 'isArray').mockReturnValue(false);
-		jest.spyOn(Utils, 'pathToValue').mockReturnValue(dataPath.$childs[0]);
+		vm.$vd.key = dataPath;
 
-		dataPath.$validateLinks('qwe');
+		dataPath.$validateLinks('key.0');
 
 		expect(dataPath.$childs[0].$validate).toHaveBeenCalled();
 		expect(dataPath.$childs[1].$validate).not.toHaveBeenCalled();
@@ -514,25 +540,26 @@ describe('DataPath class', () => {
 		dataPath.$childs[0].$validate = jest.fn();
 		dataPath.$childs[1].$validate = jest.fn();
 
-		console.log(Object.keys(dataPath.$childs));
-		jest.spyOn(Utils, 'isArray').mockReturnValue(true);
-		jest.spyOn(Utils, 'pathToValue').mockImplementation((path) => {
-			console.log(path);
-			if (path === 'qwe')
-				return dataPath.$childs[0];
+		vm.$vd.key = dataPath;
 
-			if (path === 'asd')
-				return dataPath.$childs[1];
-		});
-
-		dataPath.$validateLinks(['qwe', 'asd']);
+		dataPath.$validateLinks(['key.0', 'key.1']);
 
 		expect(dataPath.$childs[0].$validate).toHaveBeenCalled();
 		expect(dataPath.$childs[1].$validate).toHaveBeenCalled();
 	});
 
 	it('does not validate wrong links', () => {
+		dataPath = new DataPath(vm, 'key', ['qwe', 'asd'], {});
 
+		dataPath.$childs[0].$validate = jest.fn();
+		dataPath.$childs[1].$validate = jest.fn();
+
+		vm.$vd.key = dataPath;
+
+		dataPath.$validateLinks(['key.qwe', 'key.1']);
+
+		expect(dataPath.$childs[0].$validate).not.toHaveBeenCalled();
+		expect(dataPath.$childs[1].$validate).toHaveBeenCalled();
 	});
 
 	it('returns the full path', () => {
