@@ -222,7 +222,7 @@ export default class DataPath {
 		links.forEach(link => {
 			dataPath = Utils.pathToValue(link, this.$vd);
 
-			if (dataPath !== undefined)
+			if (dataPath instanceof DataPath)
 				dataPath.$validate(true);
 		});
 	}
