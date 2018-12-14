@@ -1,6 +1,6 @@
-import * as Utils from '../../libraries/Utils.js';
-import UndefinedPath from './UndefinedPath.js';
-import Result from '../Result.js';
+import Result from '@/classes/Result.js';
+import UndefinedPath from '@/classes/paths/UndefinedPath.js';
+import * as Utils from '@/libraries/Utils.js';
 
 export default class DataPath {
 

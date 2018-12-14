@@ -1,4 +1,4 @@
-import Task from './Task.js';
+import Task from '@/classes/Task.js';
 
 export default class Core {
 

@@ -1,4 +1,4 @@
-import * as Utils from '../libraries/Utils.js';
+import * as Utils from '@/libraries/Utils.js';
 
 export default class Result {
 
