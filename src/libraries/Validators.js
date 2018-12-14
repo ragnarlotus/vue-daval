@@ -1,4 +1,4 @@
-import * as Utils from './Utils.js';
+import * as Utils from '@/libraries/Utils.js';
 
 const types = {
 	boolean(value) {
