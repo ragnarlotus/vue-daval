@@ -8,7 +8,8 @@ This is a Vue data validator, trying to cover all needs and built on top of ES6 
 [![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/vue-daval.svg?style=flat-square)](https://www.npmjs.com/package/vue-daval)
 [![GitHub issues](https://img.shields.io/github/issues-raw/deulos/vue-daval.svg?style=flat-square)](https://www.npmjs.com/package/vue-daval)
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://www.npmjs.com/package/vue-daval)
-[![Codacy Badge](https://img.shields.io/codacy/coverage/16ba5056c78347f19ae7fafaeb6c30eb.svg)](https://www.npmjs.com/package/vue-daval)
+[![Codacy Badge](https://img.shields.io/codacy/coverage/16ba5056c78347f19ae7fafaeb6c30eb.svg?style=flat-square)](https://www.npmjs.com/package/vue-daval)
+[![Codacy Badge](https://img.shields.io/codacy/grade/16ba5056c78347f19ae7fafaeb6c30eb.svg?style=flat-square)](https://www.npmjs.com/package/vue-daval)
 
 ## Demo
 
