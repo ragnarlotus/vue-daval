@@ -52,7 +52,7 @@ module.exports = {
         "security/detect-non-literal-fs-filename": "error",
         "security/detect-non-literal-require": "error",
         "security/detect-possible-timing-attacks": "error",
-        "security_detect-pseudoRandomBytes": "error",
+        "security/detect-pseudoRandomBytes": "error",
         "security/detect-object-injection": "off",
         "security/detect-no-csrf-before-method-override": "error",
         "dot-location": ["error", "property"],
