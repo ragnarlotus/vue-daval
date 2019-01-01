@@ -5,13 +5,17 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 Vue.use(BootstrapVue);
 
-import hljs from 'highlight.js/lib/highlight';
 import javascript from 'highlight.js/lib/languages/javascript';
+import vue from 'vue-highlight.js/lib/languages/vue';
 import 'highlight.js/styles/ir-black.css';
-hljs.registerLanguage('javascript', javascript);
 
 import VueHighlightJS from 'vue-highlight.js';
-Vue.use(VueHighlightJS);
+Vue.use(VueHighlightJS, {
+	languages: {
+		javascript,
+		vue
+	}
+});
 
 import App from './App.vue';
 
