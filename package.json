@@ -32,22 +32,22 @@
     "dist"
   ],
   "dependencies": {
-    "vue": "^2.5.20"
+    "vue": "^2.5.21"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.2.0",
-    "@vue/cli-plugin-babel": "^3.2.0",
-    "@vue/cli-plugin-unit-jest": "^3.2.0",
-    "@vue/cli-service": "^3.2.0",
-    "@vue/test-utils": "^1.0.0-beta.27",
+    "@babel/preset-env": "^7.2.3",
+    "@vue/cli-plugin-babel": "^3.2.2",
+    "@vue/cli-plugin-unit-jest": "^3.2.2",
+    "@vue/cli-service": "^3.2.2",
+    "@vue/test-utils": "^1.0.0-beta.28",
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
     "bootstrap-vue": "^2.0.0-rc.11",
     "highlight.js": "^9.13.1",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.0.1",
-    "vue-highlight.js": "^2.2.0",
-    "vue-template-compiler": "^2.5.20"
+    "vue-highlight.js": "^3.0.0-beta.1",
+    "vue-template-compiler": "^2.5.21"
   },
   "postcss": {
     "plugins": {
