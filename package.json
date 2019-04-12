@@ -1,6 +1,6 @@
 {
   "name": "vue-daval",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "description": "Vue data validator",
   "author": "ragnar lotus",
   "repository": {
@@ -35,7 +35,7 @@
     "vue": "^2.5.21"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-env": "^7.4.3",
     "@vue/cli-plugin-babel": "^3.2.2",
     "@vue/cli-plugin-unit-jest": "^3.2.3",
     "@vue/cli-service": "^3.2.3",
@@ -55,7 +55,7 @@
     }
   },
   "vue": {
-    "baseUrl": "/vue-daval/",
+    "publicPath": "/vue-daval/",
     "css": {
       "extract": false
     }
