@@ -2,98 +2,89 @@ import * as Utils from '@/libraries/Utils.js';
 
 export default class Task {
 
-	constructor(vm, dataPath, revalidate = false) {
-		this.$vm = vm;
-		this.$vd = vm.$vd;
+	constructor(path) {
+		this.rootPath = path;
 
 		this.promise = new Promise((resolve, reject) => {
 			this.onSuccess = resolve;
 			this.onError = reject;
 		});
 
-		this.dataPath = dataPath;
-		this.revalidate = revalidate;
-		this.validations = new Map();
+		this.validationPaths = [];
 		this.validated = 0;
 		this.finished = false;
 		this.valid = true;
+		this.validators = this.rootPath.$vm.$options.vdValidators;
+		this.skipValidationsOnError = this.rootPath.$config.skipValidationsOnError;
 
-		this.addValidation(this.dataPath);
-
-		this.updateTime();
+		this.addValidationPath(this.rootPath);
 	}
 
-	addValidation(dataPath) {
-		if (dataPath.$hasRules())
-			this.validations.set(dataPath.$toString(), dataPath);
+	addValidationPath(path) {
+		if (path.$result)
+			this.validationPaths.push(path);
 
-		Object.values(dataPath.$childs).forEach(child => {
-			this.addValidation(child)
-		});
+		if (!path.$childs)
+			return;
+
+		for (const child of path.$childs)
+			this.addValidationPath(path[child]);
 	}
 
-	updateTime() {
-		this.time = Date.now();
-	}
-
-	run() {
-		let skipValidationsOnError = this.$vd.$getConfig('skipValidationsOnError');
-		let time = this.time;
-
-		for (let validation of this.validations.values()) {
-			this.checkValidation(validation, time);
-
-			if (skipValidationsOnError && this.valid === false) {
-				this.finished = true;
+	run(revalidate = false) {
+		for (const path of this.validationPaths) {
+			if (this.finished)
 				break;
-			}
+
+			this.validatePath(path, revalidate);
 		}
 
-		this.checkValidationsFinished();
+		this.checkFinished();
 	}
 
-	checkValidation(validation, time) {
-		if (this.revalidate === false && validation.$validated === true) {
+	validatePath(path, revalidate) {
+		if (!revalidate && path.$validated) {
 			this.validated++;
 
-			if (validation.$error)
+			if (path.$error)
 				this.valid = false;
 
 			return;
 		}
 
-		validation.$reset(false);
+		path.$reset(false);
 
-		validation.$getRules().forEach(rule => {
-			if (validation.$validated || time < this.time)
-				return;
+		const rules = path.$ruleSet.rules;
 
-			this.checkValidationRule(validation, rule);
-		});
+		for (const [ruleName, ruleValue] of Object.entries(rules)) {
+			if (path.$validated)
+				break;
+
+			this.validateRule(path, ruleName, ruleValue);
+		}
 	}
 
-	checkValidationRule(validation, ruleName) {
+	validateRule(path, ruleName, ruleValue) {
 		let valid = false;
-		let ruleValue = validation.$rules[ruleName];
-		let validator = this.$vd.$getValidator(ruleName);
-		let data = validation.$data;
+		let validator = this.validators[ruleName];
+		let data = path.$data;
 
 		if (
 			ruleName !== 'required' &&
 			[undefined, null].includes(data) &&
-			('required' in validation.$rules === false || validation.$rules.required === false)
+			('required' in path.$rules === false || path.$rules.required === false)
 		) {
 			valid = true;
 
 		} else if (validator !== undefined) {
 			if (Utils.isFunction(ruleValue))
-				ruleValue = ruleValue.call(this.$vm);
+				ruleValue = ruleValue.call(this.rootPath.$vm);
 
-			valid = validator.call(this.$vm, ruleValue, data, validation);
+			valid = validator.call(this.rootPath.$vm, ruleValue, data, path);
 
 		} else if (Utils.isFunction(ruleValue)) {
-			validator = validation.$rules[ruleName];
-			valid = validator.call(this.$vm, data, validation);
+			validator = path.$rules[ruleName];
+			valid = validator.call(this.rootPath.$vm, data, path);
 
 		} else {
 			// eslint-disable-next-line no-console
@@ -101,48 +92,46 @@ export default class Task {
 			valid = true;
 		}
 
-		if (Utils.isPromise(valid) === true) {
+		if (Utils.isPromise(valid)) {
 			valid.then(() => {
-				this.addValidationRuleResult(validation, ruleName, true);
+				this.addRuleResult(path, ruleName, false);
 
 			}).catch(error => {
-				this.addValidationRuleResult(validation, ruleName, error.statusText || error);
+				this.addRuleResult(path, ruleName, error.statusText || error);
 			});
 
 			return;
 		}
 
-		this.addValidationRuleResult(validation, ruleName, valid);
+		this.addRuleResult(path, ruleName, !valid);
 	}
 
-	addValidationRuleResult(validation, rule, valid) {
-		validation.$result.add(rule, valid);
+	addRuleResult(path, rule, error) {
+		path.$result.add(rule, error);
 
-		if (valid !== true)
+		if (error !== false)
 			this.valid = false;
 
-		if (validation.$validated) {
+		if (path.$validated) {
 			this.validated++;
 
-			this.checkValidationsFinished();
+			this.checkFinished();
 		}
 	}
 
-	checkValidationsFinished() {
-		if (this.validations.size > this.validated && this.finished === false)
+	checkFinished() {
+		if (this.validationPaths.length > this.validated && !this.finished)
 			return;
 
 		this.finished = true;
 
-		if (this.valid === true)
+		this.rootPath.$vm.$forceUpdate();
+
+		if (this.valid)
 			this.onSuccess();
 
 		else
 			this.onError();
-
-		this.$vm.$forceUpdate();
-
-		this.$vd.$removeTask(this);
 	}
 
 }

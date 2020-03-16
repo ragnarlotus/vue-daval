@@ -1,70 +1,75 @@
-import * as Utils from '@/libraries/Utils.js';
+import { isFunction } from '../libraries/Utils'
 
 export default class Result {
 
-	constructor(dataPath) {
-		this.vd = dataPath.$vd;
-		this.dataPath = dataPath;
+	constructor(path) {
+		this.path = path;
 
 		this.reset();
 	}
 
-	add(rule, valid = false) {
-		let error;
+	get numRules() {
+		return Object.keys(this.rules).length;
+	}
 
-		if (Utils.isString(valid)) {
-			error = valid;
-			valid = false;
+	get valid() {
+		return this.error === undefined;
+	}
+
+	get invalid() {
+		return !this.valid;
+	}
+
+	get errors() {
+		return Object.fromEntries(Object.entries(this.rules).filter(rule => rule[1]));
+	}
+
+	reset() {
+		this.error = undefined;
+		this.rules = {};
+		this.validated = false;
+	}
+
+	add(rule, error = true) {
+		if (error !== false) {
+			error = this.getMessage(rule, error === true? undefined : error);
+
+			if (!this.error)
+				this.error = error;
 		}
-
-		if (!valid)
-			error = this.getMessage(rule, error);
 
 		this.rules[rule] = error;
 
-		if (!valid && !this.error)
-			this.error = error;
-
-		if (Object.keys(this.rules).length === this.numRules || (this.error && this.vd.$getConfig('skipRulesOnError')))
+		if (this.numRules >= this.path.$ruleSet.count || (this.error && this.path.$config.skipRulesOnError))
 			this.validated = true;
 	}
 
 	getMessage(rule, message) {
-		if (!message)
-			message = this.dataPath.$rules.message;
+		const rules = this.path.$ruleSet.entries;
 
 		if (!message)
-			message = this.vd.$getMessage(rule);
+			message = rules.message;
 
 		if (!message)
-			return this.vd.$getMessage('undefined');
+			message = this.path.$vm.$options.vdMessages[rule];
 
-		let field = this.dataPath.$rules.field || this.dataPath.$key;
+		if (!message)
+			return this.path.$vm.$options.vdMessages['undefined'];
+
+		if (isFunction(message))
+			return message.call(this.path.$vm, rule);
+
+		let field = rules.field || this.path.$key;
 
 		message = message.replace('{field}', field);
 
-		rule = this.dataPath.$rules[rule].toString();
+		rule = rules[rule].toString();
 
 		rule = rule.split('.').slice(-1)[0];
 
 		message = message.replace('{rule}', rule);
 
 		return message;
-	}
-
-	hasError() {
-		return this.error !== undefined;
-	}
-
-	getErrors() {
-		return Object.values(this.rules).filter(error => error);
-	}
-
-	reset() {
-		this.error = undefined;
-		this.rules = {};
-		this.numRules = this.dataPath.$getRules().length;
-		this.validated = false;
 	}
 
 }

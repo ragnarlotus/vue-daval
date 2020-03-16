@@ -1,6 +1,6 @@
 {
   "name": "vue-daval",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "description": "Vue data validator",
   "author": "ragnar lotus",
   "repository": {
@@ -31,9 +31,6 @@
   "files": [
     "dist"
   ],
-  "dependencies": {
-    "vue": "^2.6.10"
-  },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.0.5",
     "@vue/cli-plugin-eslint": "^4.0.0",
@@ -48,6 +45,7 @@
     "highlight.js": "^9.13.1",
     "node-sass": "^4.12.0",
     "sass-loader": "^8.0.0",
+    "vue": "^2.6.10",
     "vue-highlight.js": "^3.0.1",
     "vue-template-compiler": "^2.5.21"
   },

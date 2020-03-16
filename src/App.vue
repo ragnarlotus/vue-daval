@@ -2,18 +2,21 @@
 	<div id="app" class="container">
 		<h1>vue-daval</h1>
 
-		<examples-index></examples-index>
+		<daval-test />
+
+		<!-- <examples-index></examples-index> -->
 	</div>
 </template>
 
 <script>
-	import ExamplesIndex from '@/components/examples/index.vue';
+	import DavalTest from '@/components/DavalTest';
+//	import ExamplesIndex from '@/components/examples/index.vue';
 
 	export default {
 		name: 'app',
 
 		components: {
-			ExamplesIndex
+			DavalTest,
 		}
 	}
 </script>

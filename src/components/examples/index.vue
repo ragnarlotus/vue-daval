@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<component v-for="example in examples" :key="example" :is="example" class="example" :get-input-class="getInputClass"></component>
+		<basic-validation />
+		<!-- <component v-for="example in examples" :key="example" :is="example" class="example" :get-input-class="getInputClass"></component> -->
 	</div>
 </template>
 
@@ -27,11 +28,11 @@
 		data: () => ({
 			examples: [
 				'BasicValidation',
-				'GroupsValidation',
-				'NestedValidations',
-				'DynamicValidation',
-				'CustomValidation',
-				'Links'
+				// 'GroupsValidation',
+				// 'NestedValidations',
+				// 'DynamicValidation',
+				// 'CustomValidation',
+				// 'Links'
 			]
 		}),
 

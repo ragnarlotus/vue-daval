@@ -4,7 +4,7 @@
 			<div class="col-sm-4">
 				<div class="form-group">
 					<label>Email</label>
-					<input v-model="email" :class="getInputClass($vd.email)">
+					<input v-model="email">
 					<div v-show="$vd.email.$error" class="invalid-feedback">{{ $vd.email.$error }}</div>
 				</div>
 
@@ -40,12 +40,8 @@ $vd.email.$errors = {{ $vd.email.$errors }};
 		mixins: [ VueDaval ],
 
 		data: () => ({
-			email: undefined
+			email: 'asd@asd.com',
 		}),
-
-		props: [
-			'getInputClass'
-		],
 
 		vdRules: {
 			email: { required: true, type: 'email' }

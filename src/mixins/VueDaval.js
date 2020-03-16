@@ -1,26 +1,27 @@
-import Core from '@/classes/Core.js';
-import DataPath from '@/classes/paths/DataPath.js';
-import * as Validators from '@/libraries/Validators.js';
+import Path from '@/classes/Path';
+import * as Validators from '@/libraries/Validators';
 
 export default {
 
 	beforeMount() {
-		this.$vd = new Core(this);
-
-		let data = Object.assign({}, this.$data);
-
-		if (this._computedWatchers) {
-			Object.keys(this._computedWatchers).forEach(key => {
-				data[key] = this[key];
-			});
-		}
-
-		this.$vd.$paths[''] = new DataPath(this, '', data, this.$options.vdRules);
+		this.$vd = new Path(this, undefined, this.$options.vdRules, this);
+		// this.$set(this, '$vd', $vd);
 	},
 
 	beforeDestroy() {
-		this.$vd.$paths[''].$delete();
+		// this.$vd.$delete();
 	},
+
+	// watch: {
+	// 	$data: {
+	// 		deep: true,
+	// 		handler(newData, oldData) {
+	// 			console.log('old', oldData);
+	// 			console.log('new', newData);
+	// 			this.$vd.$setChilds();
+	// 		},
+	// 	},
+	// },
 
 	vdConfig: {
 		validateOnType: true,
